@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events — SABWB Influencers Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #1B3A6B;
+      --blue-light: #2A5298;
+      --orange: #e87b1a;
+      --orange-dark: #c55d05;
+      --orange-glow: rgba(232, 123, 26, 0.08);
+      --teal: #379b85;
+      --teal-dark: #2d7d6b;
+      --black: #1A1A2E;
+      --text: #1d1d1f;
+      --text-secondary: #555555;
+      --text-muted: #86868b;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f7;
+      --gray-200: #e8e8ed;
+      --gray-300: #d2d2d7;
+      --border: rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-xl: 0 24px 60px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.05);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 100px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text); background: var(--white);
+      -webkit-font-smoothing: antialiased; line-height: 1.5;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(255,255,255,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 36px; }
+    .nav-logo-text {
+      font-size: 20px; font-weight: 800; color: var(--blue); letter-spacing: -0.5px;
+    }
+    .nav-back {
+      font-size: 14px; font-weight: 600; color: var(--text-secondary);
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--orange); }
+
+    /* ===== EVENT HERO ===== */
+    .event-hero {
+      position: relative; min-height: 480px;
+      display: flex; align-items: flex-end;
+      overflow: hidden;
+    }
+    .event-hero-bg {
+      position: absolute; inset: 0;
+    }
+    .event-hero-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .event-hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(26, 26, 46, 0.3) 0%,
+        rgba(26, 26, 46, 0.85) 100%
+      );
+    }
+    .event-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 1280px; margin: 0 auto; padding: 60px 32px 48px;
+      width: 100%;
+    }
+    .event-hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: var(--radius-full);
+      background: rgba(232,123,26,0.2); border: 1px solid rgba(232,123,26,0.3);
+      font-size: 12px; font-weight: 700; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+    }
+    .event-hero h1 {
+      font-weight: 800;
+      font-size: clamp(36px, 5vw, 60px); color: #fff;
+      line-height: 1.08; margin-bottom: 16px;
+    }
+    .event-hero-meta {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      font-size: 16px; color: rgba(255,255,255,0.7);
+    }
+    .event-hero-meta span {
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ===== MAIN LAYOUT (Eventbrite-style) ===== */
+    .event-layout {
+      max-width: 1280px; margin: 0 auto; padding: 48px 32px;
+      display: grid; grid-template-columns: 1fr 380px; gap: 48px;
+      align-items: start;
+    }
+
+    /* ===== LEFT CONTENT ===== */
+    .event-content h2 {
+      font-weight: 800;
+      font-size: 28px; color: var(--text);
+      margin-bottom: 20px; margin-top: 40px;
+    }
+    .event-content h2:first-child { margin-top: 0; }
+
+    .event-content p {
+      font-size: 16px; color: var(--text-secondary);
+      line-height: 1.75; margin-bottom: 16px;
+    }
+
+    .event-detail-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin: 28px 0;
+    }
+    .event-detail-card {
+      padding: 20px; background: var(--gray-100);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .event-detail-icon {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .event-detail-icon.orange { background: var(--orange-glow); }
+    .event-detail-icon.teal { background: rgba(55,155,133,0.1); }
+    .event-detail-icon.brown { background: rgba(74,44,26,0.08); }
+    .event-detail-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .event-detail-value {
+      font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.3;
+    }
+
+    /* Speakers in event page */
+    .event-speakers {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+      margin: 28px 0;
+    }
+    .event-speaker {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px; background: #fff;
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      transition: box-shadow 0.3s;
+    }
+    .event-speaker:hover { box-shadow: var(--shadow-md); }
+    .event-speaker img {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: cover; flex-shrink: 0;
+      border: 3px solid var(--gray-200);
+    }
+    .event-speaker-name {
+      font-size: 16px; font-weight: 700; color: var(--text);
+    }
+    .event-speaker-title {
+      font-size: 12px; font-weight: 600; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0 6px;
+    }
+    .event-speaker-bio {
+      font-size: 13px; color: var(--text-muted); line-height: 1.5;
+    }
+
+    /* Schedule */
+    .event-schedule { margin: 28px 0; }
+    .schedule-day {
+      margin-bottom: 28px;
+    }
+    .schedule-day-title {
+      font-size: 14px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--orange);
+      margin-bottom: 16px; padding-bottom: 8px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .schedule-item {
+      display: flex; gap: 20px; padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .schedule-item:last-child { border-bottom: none; }
+    .schedule-time {
+      flex-shrink: 0; width: 100px;
+      font-size: 14px; font-weight: 700; color: var(--blue);
+    }
+    .schedule-info h4 {
+      font-size: 16px; font-weight: 600; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .schedule-info p {
+      font-size: 14px; color: var(--text-muted); line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Event gallery */
+    .event-gallery {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      margin: 28px 0;
+    }
+    .event-gallery img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      border-radius: var(--radius-sm); transition: transform 0.3s;
+    }
+    .event-gallery img:hover { transform: scale(1.03); }
+
+    /* ===== RIGHT SIDEBAR (Sticky Registration Card) ===== */
+    .event-sidebar {
+      position: sticky; top: 88px;
+    }
+    .register-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .register-card-header {
+      padding: 28px 28px 0; text-align: center;
+    }
+    .register-price {
+      font-weight: 800;
+      font-size: 36px; color: var(--text);
+    }
+    .register-price span {
+      font-family: 'DM Sans'; font-size: 14px; color: var(--text-muted);
+    }
+    .register-price-note {
+      font-size: 13px; color: var(--teal); font-weight: 600; margin-top: 4px;
+    }
+    .register-card-body { padding: 24px 28px; }
+
+    .register-form label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text); margin-bottom: 6px; margin-top: 14px;
+    }
+    .register-form label:first-child { margin-top: 0; }
+    .register-form input, .register-form select {
+      width: 100%; padding: 12px 14px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-200); background: #fff;
+      font-family: 'Inter', sans-serif; font-size: 15px;
+      color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .register-form input:focus, .register-form select:focus {
+      border-color: var(--orange);
+    }
+    .register-form input::placeholder { color: #bfb0a0; }
+
+    .register-btn {
+      width: 100%; margin-top: 20px; padding: 16px;
+      border-radius: var(--radius-full); background: var(--orange);
+      color: #fff; font-size: 16px; font-weight: 700;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      box-shadow: 0px 4px 14px rgba(232,123,26,0.3);
+      transition: all 0.25s;
+    }
+    .register-btn:hover {
+      background: var(--orange-dark); transform: translateY(-1px);
+      box-shadow: 0px 8px 24px rgba(232,123,26,0.4);
+    }
+
+    .register-meta {
+      padding: 20px 28px; border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--text-muted);
+    }
+    .register-meta-item {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .register-meta-item:last-child { margin-bottom: 0; }
+    .register-meta-icon {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; background: var(--gray-100);
+    }
+
+    /* Share bar */
+    .share-card {
+      margin-top: 20px; padding: 20px 28px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .share-label {
+      font-size: 13px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;
+    }
+    .share-buttons { display: flex; gap: 10px; }
+    .share-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--gray-100); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); font-size: 15px; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .share-btn:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+    /* ===== MORE EVENTS ===== */
+    .more-events {
+      max-width: 1280px; margin: 0 auto; padding: 48px 32px 80px;
+      border-top: 1px solid var(--border);
+    }
+    .more-events h2 {
+      font-weight: 800;
+      font-size: 28px; color: var(--text); margin-bottom: 28px;
+    }
+    .more-events-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .more-event-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-md); overflow: hidden;
+      text-decoration: none; color: inherit; transition: all 0.3s;
+      display: block;
+    }
+    .more-event-card:hover {
+      transform: translateY(-4px); box-shadow: var(--shadow-lg);
+    }
+    .more-event-card img {
+      width: 100%; height: 160px; object-fit: cover;
+    }
+    .more-event-card-body { padding: 20px; }
+    .more-event-card-tag {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--orange); margin-bottom: 6px;
+    }
+    .more-event-card-body h3 {
+      font-size: 17px; font-weight: 700; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .more-event-card-body p {
+      font-size: 13px; color: var(--text-muted);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--black); padding: 40px 32px;
+      text-align: center;
+    }
+    .footer p { font-size: 13px; color: rgba(255,255,255,0.4); }
+    .footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    .footer a:hover { color: var(--orange); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .event-layout { grid-template-columns: 1fr; }
+      .event-sidebar { position: static; }
+      .event-speakers { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .event-hero { min-height: 360px; }
+      .event-hero-inner { padding: 40px 20px 32px; }
+      .event-detail-cards { grid-template-columns: 1fr; }
+      .event-gallery { grid-template-columns: 1fr 1fr; }
+      .more-events-grid { grid-template-columns: 1fr; }
+      .event-layout { padding: 32px 20px; }
+      .more-events { padding: 32px 20px 60px; }
+    }
+
+    /* Animations */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="https://www.sabwb.org/hosted/images/f7/636225135544cf8eba28cc536d207e/sabwb-final-white.png" alt="SABWB" style="filter: brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(600%) hue-rotate(350deg);">
+        <span class="nav-logo-text">SABWB</span>
+      </a>
+      <a href="index.html" class="nav-back">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 4l-4 4 4 4"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <!-- EVENT HERO -->
+  <section class="event-hero">
+    <div class="event-hero-bg">
+      <img src="https://www.sabwb.org/hosted/images/2b/bf92baf92f4db281e96b257e24641c/d9b7ea58920559dc29148cf745b2b8cdbd19eb1a-1.jpg" alt="Time to Rise Conference">
+    </div>
+    <div class="event-hero-inner">
+      <div class="event-hero-tag">
+        <span style="width:6px;height:6px;background:var(--orange);border-radius:50%;"></span>
+        Upcoming Conference
+      </div>
+      <h1>Time to Rise Conference</h1>
+      <div class="event-hero-meta">
+        <span><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> May 15 — 16, 2026</span>
+        <span><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> San Antonio, Texas</span>
+        <span><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg> 200+ Attendees Expected</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT LAYOUT -->
+  <div class="event-layout">
+
+    <!-- LEFT CONTENT -->
+    <div class="event-content">
+
+      <h2>About This Event</h2>
+      <p>The <strong>Time to Rise Conference</strong> is a powerful two-day gathering bringing together leaders, pastors, and influencers from across the nation who are committed to confronting the persecution of Christians and standing boldly for international religious freedom.</p>
+      <p>Join us in San Antonio, Texas for two transformative days of worship, powerful speakers, strategic conversations, and community building. Whether you're a pastor, business leader, educator, or civic servant — this event is designed to equip and empower you to rise up and make a difference.</p>
+
+      <div class="event-detail-cards reveal">
+        <div class="event-detail-card">
+          <div class="event-detail-icon orange"><svg width="20" height="20" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+          <div>
+            <div class="event-detail-label">Date & Time</div>
+            <div class="event-detail-value">May 15 — 16, 2026<br><span style="font-weight:400;font-size:14px;color:var(--text-muted);">9:00 AM — 5:00 PM CDT</span></div>
+          </div>
+        </div>
+        <div class="event-detail-card">
+          <div class="event-detail-icon teal"><svg width="20" height="20" fill="none" stroke="var(--teal)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div>
+            <div class="event-detail-label">Location</div>
+            <div class="event-detail-value">San Antonio, TX<br><span style="font-weight:400;font-size:14px;color:var(--text-muted);">Venue details upon registration</span></div>
+          </div>
+        </div>
+        <div class="event-detail-card">
+          <div class="event-detail-icon brown"><svg width="20" height="20" fill="none" stroke="#6b4c30" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div>
+            <div class="event-detail-label">Format</div>
+            <div class="event-detail-value">In-Person Conference<br><span style="font-weight:400;font-size:14px;color:var(--text-muted);">2 full days of sessions</span></div>
+          </div>
+        </div>
+        <div class="event-detail-card">
+          <div class="event-detail-icon orange"><svg width="20" height="20" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+          <div>
+            <div class="event-detail-label">Who Should Attend</div>
+            <div class="event-detail-value">Leaders & Influencers<br><span style="font-weight:400;font-size:14px;color:var(--text-muted);">Pastors, business, civic, education</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Featured Speakers</h2>
+      <p>Hear from nationally recognized leaders who are on the front lines of defending religious liberty and empowering communities around the world.</p>
+
+      <div class="event-speakers reveal">
+        <div class="event-speaker">
+          <img src="https://www.sabwb.org/hosted/images/06/e59c3e83b9452b8ca93a9d6f233e47/unnamed.jpg" alt="Mike Arnold">
+          <div>
+            <div class="event-speaker-name">Mike Arnold</div>
+            <div class="event-speaker-title">Conference Convener</div>
+            <div class="event-speaker-bio">Former mayor, bestselling author, 16+ visits to Nigeria, founded Africa Arise schools.</div>
+          </div>
+        </div>
+        <div class="event-speaker">
+          <img src="https://www.sabwb.org/hosted/images/21/44ece949984c79b469d1b8ffa228f1/unnamed-1-.jpg" alt="Stephen Osemwegie">
+          <div>
+            <div class="event-speaker-name">Stephen Osemwegie</div>
+            <div class="event-speaker-title">Save Nigeria Group USA</div>
+            <div class="event-speaker-bio">Bridges Nigerian and American Christian communities through policy and prayer.</div>
+          </div>
+        </div>
+        <div class="event-speaker">
+          <img src="https://www.sabwb.org/hosted/images/27/df535d8f344dd99a1e880256d7315b/unnamed-2-.jpg" alt="Pastor John Haruna">
+          <div>
+            <div class="event-speaker-name">Pastor John Haruna</div>
+            <div class="event-speaker-title">Senior Pastor, Nigeria</div>
+            <div class="event-speaker-bio">Continues faithful ministry despite burying 500+ church members from attacks.</div>
+          </div>
+        </div>
+        <div class="event-speaker">
+          <img src="https://www.sabwb.org/hosted/images/57/465b828fec43baab398605f7659bc4/unnamed-3-.jpg" alt="Dede Laugesen">
+          <div>
+            <div class="event-speaker-name">Dede Laugesen</div>
+            <div class="event-speaker-title">Save the Persecuted Christians</div>
+            <div class="event-speaker-bio">National leader on international religious freedom, influences U.S. policy.</div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Schedule</h2>
+      <div class="event-schedule reveal">
+        <div class="schedule-day">
+          <div class="schedule-day-title">Day 1 — Thursday, May 15</div>
+          <div class="schedule-item">
+            <div class="schedule-time">9:00 AM</div>
+            <div class="schedule-info">
+              <h4>Registration & Welcome</h4>
+              <p>Check-in, fellowship, and light refreshments</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">10:00 AM</div>
+            <div class="schedule-info">
+              <h4>Opening Session — Time to Rise</h4>
+              <p>Keynote address and worship</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">12:00 PM</div>
+            <div class="schedule-info">
+              <h4>Lunch & Networking</h4>
+              <p>Connect with fellow attendees and speakers</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">1:30 PM</div>
+            <div class="schedule-info">
+              <h4>Panel: The Global Persecution Crisis</h4>
+              <p>Mike Arnold, Stephen Osemwegie, and Pastor John Haruna</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">3:30 PM</div>
+            <div class="schedule-info">
+              <h4>Breakout Sessions</h4>
+              <p>Small group discussions and strategic planning</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">5:00 PM</div>
+            <div class="schedule-info">
+              <h4>Day 1 Close</h4>
+              <p>Evening prayer and fellowship</p>
+            </div>
+          </div>
+        </div>
+        <div class="schedule-day">
+          <div class="schedule-day-title">Day 2 — Friday, May 16</div>
+          <div class="schedule-item">
+            <div class="schedule-time">9:00 AM</div>
+            <div class="schedule-info">
+              <h4>Morning Worship & Prayer</h4>
+              <p>Start the day with collective prayer</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">10:00 AM</div>
+            <div class="schedule-info">
+              <h4>Session: Policy & Action on Capitol Hill</h4>
+              <p>Dede Laugesen on influencing U.S. religious freedom policy</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">12:00 PM</div>
+            <div class="schedule-info">
+              <h4>Lunch</h4>
+              <p>Community meal and networking</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">1:30 PM</div>
+            <div class="schedule-info">
+              <h4>Action Workshop: What You Can Do</h4>
+              <p>Practical steps every influencer can take in their city</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <div class="schedule-time">3:30 PM</div>
+            <div class="schedule-info">
+              <h4>Closing Session & Commissioning</h4>
+              <p>Final charge, prayer, and call to action</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2>Event Photos</h2>
+      <p>See moments from our previous gatherings and get a sense of what to expect.</p>
+      <div class="event-gallery reveal">
+        <img src="https://www.sabwb.org/hosted/images/e6/e07b00cdeb11e8b772bd3c7cb1cf39/17038650_10158408610205457_8355404524341305759_o.jpg" alt="Community gathering">
+        <img src="https://www.sabwb.org/hosted/images/e6/a51fb0cdeb11e895700db21f1ba0c8/11248252_10205239646605332_8585165960148074455_n.jpg" alt="Leadership event">
+        <img src="https://www.sabwb.org/hosted/images/0e/7d6b00cde711e88c886f3e1bec2013/Screen-Shot-2018-10-11-at-10.35.30-PM.png" alt="Community impact">
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="event-sidebar">
+      <div class="register-card">
+        <div class="register-card-header">
+          <div class="register-price">Free <span>admission</span></div>
+          <div class="register-price-note">SABWB Partners get priority seating</div>
+        </div>
+        <div class="register-card-body">
+          <form class="register-form" data-event-form="conference" onsubmit="handleRegister(event)">
+            <label>Full Name *</label>
+            <input type="text" placeholder="Your full name" required>
+            <label>Email Address *</label>
+            <input type="email" placeholder="you@example.com" required>
+            <label>Phone Number</label>
+            <input type="tel" placeholder="(210) 555-0000">
+            <label>Number of Tickets</label>
+            <select>
+              <option>1 ticket</option>
+              <option>2 tickets</option>
+              <option>3 tickets</option>
+              <option>4 tickets</option>
+              <option>5+ tickets</option>
+            </select>
+            <label>Are you a SABWB Partner?</label>
+            <select>
+              <option>No — I'd like to learn more</option>
+              <option>Yes — Current Partner</option>
+              <option>Interested in becoming one</option>
+            </select>
+            <button type="submit" class="register-btn" data-ready-text="Register Now — It's Free">Register Now — It's Free</button>
+            <a href="live.html" style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:var(--orange);text-decoration:none;"><span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;"></span> Watch Live Stream (when available)</a>
+          </form>
+        </div>
+        <div class="register-meta">
+          <div class="register-meta-item">
+            <div class="register-meta-icon"><svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+            <div>
+              <strong style="color:var(--text);">May 15 — 16, 2026</strong><br>
+              9:00 AM — 5:00 PM CDT
+            </div>
+          </div>
+          <div class="register-meta-item">
+            <div class="register-meta-icon"><svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div>
+              <strong style="color:var(--text);">San Antonio, Texas</strong><br>
+              Venue details sent upon registration
+            </div>
+          </div>
+          <div class="register-meta-item">
+            <div class="register-meta-icon"><svg width="16" height="16" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div>
+              <strong style="color:var(--text);">Hosted by SABWB</strong><br>
+              Bishop Charles E. Flowers, Convener
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="share-card">
+        <div class="share-label">Share This Event</div>
+        <div class="share-buttons">
+          <a href="#" class="share-btn" title="Facebook"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="#" class="share-btn" title="Twitter"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-7-8.7L20 4h-2l-5 6.2L9 4H4z"/></svg></a>
+          <a href="#" class="share-btn" title="Email"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></a>
+          <a href="#" class="share-btn" title="Copy Link"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MORE EVENTS -->
+  <div class="more-events">
+    <h2>More Upcoming Events</h2>
+    <div class="more-events-grid">
+      <a href="events.html" class="more-event-card reveal" data-event-link="marchMixer">
+        <img src="https://www.sabwb.org/hosted/images/43/b932a1445149b9ba9e92d670b66b14/hoodmen2.png" alt="March Mixer">
+        <div class="more-event-card-body">
+          <div class="more-event-card-tag">Monthly Mixer</div>
+          <h3>March Influencers Mixer</h3>
+          <p>Mar 15 &bull; San Antonio, TX</p>
+        </div>
+      </a>
+      <a href="events.html" class="more-event-card reveal" data-event-link="businessMeetup">
+        <img src="https://www.sabwb.org/hosted/images/da/604f0549cb4ae0979e482bc0d9491a/MATCHED-Real-Estate-Flyer-.png" alt="Business Meetup">
+        <div class="more-event-card-body">
+          <div class="more-event-card-tag">Special Event</div>
+          <h3>Business Influencers Meetup</h3>
+          <p>Apr 22 &bull; San Antonio, TX</p>
+        </div>
+      </a>
+      <a href="events.html" class="more-event-card reveal" data-event-link="rally">
+        <img src="https://www.sabwb.org/hosted/images/1b/310d0a58ad45ca877c9124304af7c9/AWAKENING-A-GENERATION_-Tour_Dates-3-.png" alt="Awakening a Generation">
+        <div class="more-event-card-body">
+          <div class="more-event-card-tag">Tour</div>
+          <h3>Awakening a Generation Rally</h3>
+          <p>Dates TBA &bull; Multiple Cities</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>&copy; 2026 SABWB &bull; 8023 Vantage Dr. #313, San Antonio, TX 78230 &bull; (210) 799-3857</p>
+    <p style="margin-top:8px;"><a href="index.html">Home</a> &bull; <a href="#">Donate</a> &bull; <a href="#">Prayer Points</a> &bull; <a href="#">Contact</a></p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Registration handler
+    function handleRegister(e) {
+      e.preventDefault();
+      const href = e.target.dataset.eventHref;
+      const btn = e.target.querySelector('.register-btn');
+      if (href) {
+        btn.textContent = 'Opening calendar...';
+        window.location.href = href;
+        return;
+      }
+
+      btn.textContent = 'Calendar link coming soon';
+      btn.style.background = '#379b85';
+      btn.style.boxShadow = '0px 4px 14px rgba(55,155,133,0.3)';
+    }
+  </script>
+  <script src="event-links.js"></script>
+
+</body>
+</html>

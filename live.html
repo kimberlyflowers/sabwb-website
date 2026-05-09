@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIVE — Time to Rise Conference | SABWB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Plyr CSS -->
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #1B3A6B;
+      --blue-light: #2A5298;
+      --orange: #e87b1a;
+      --orange-dark: #c55d05;
+      --orange-glow: rgba(232, 123, 26, 0.08);
+      --teal: #379b85;
+      --teal-dark: #2d7d6b;
+      --black: #1A1A2E;
+      --text: #1d1d1f;
+      --text-secondary: #555555;
+      --text-muted: #86868b;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f7;
+      --gray-200: #e8e8ed;
+      --gray-300: #d2d2d7;
+      --border: rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 100px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text); background: var(--black);
+      -webkit-font-smoothing: antialiased; line-height: 1.5;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(26,26,46,0.92); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between; height: 60px;
+    }
+    .nav-left { display: flex; align-items: center; gap: 20px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 32px; filter: brightness(0) invert(1); }
+    .nav-logo-text {
+      font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px;
+    }
+    .nav-divider {
+      width: 1px; height: 24px; background: rgba(255,255,255,0.15);
+    }
+    .nav-live-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: var(--radius-full);
+      background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);
+      font-size: 12px; font-weight: 700; color: #ef4444;
+      text-transform: uppercase; letter-spacing: 1.5px;
+    }
+    .nav-live-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #ef4444;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+      50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .nav-viewers {
+      font-size: 13px; color: rgba(255,255,255,0.5); display: flex; align-items: center; gap: 6px;
+    }
+    .nav-viewers-count { color: #fff; font-weight: 700; }
+    .nav-btn {
+      padding: 8px 20px; border-radius: var(--radius-full);
+      font-size: 13px; font-weight: 700; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-btn-outline {
+      background: transparent; color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .nav-btn-outline:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+    .nav-btn-primary {
+      background: var(--orange); color: #fff;
+      box-shadow: 0 2px 12px rgba(232,123,26,0.3);
+    }
+    .nav-btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+    /* ===== MAIN LAYOUT ===== */
+    .live-layout {
+      max-width: 1400px; margin: 0 auto; padding: 24px 32px 60px;
+      display: grid; grid-template-columns: 1fr 380px; gap: 28px;
+      align-items: start;
+    }
+
+    /* ===== VIDEO PLAYER ===== */
+    .video-container {
+      background: #000; border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .video-wrapper {
+      position: relative; width: 100%; padding-bottom: 56.25%; /* 16:9 */
+      background: #0a0a1a;
+    }
+    .video-wrapper iframe, .video-wrapper video, .video-wrapper .plyr {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      border: none;
+    }
+    /* Plyr theme overrides */
+    .plyr--video { --plyr-color-main: var(--orange); --plyr-video-control-color: #fff; }
+    .plyr__control--overlaid {
+      background: var(--orange) !important; border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(232,123,26,0.4);
+    }
+    .plyr__control--overlaid:hover { background: var(--orange-dark) !important; }
+    /* Click for sound overlay */
+    .sound-overlay {
+      position: absolute; top: 16px; right: 16px; z-index: 10;
+      padding: 8px 16px; border-radius: var(--radius-full);
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 13px; font-weight: 600; color: #fff;
+      cursor: pointer; transition: all 0.3s;
+      display: flex; align-items: center; gap: 6px;
+      animation: fadeInDown 0.5s ease;
+    }
+    .sound-overlay:hover { background: rgba(232,123,26,0.8); }
+    .sound-overlay.hidden { opacity: 0; pointer-events: none; }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Placeholder when no stream is active */
+    .video-placeholder {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0f0f2e 0%, #1a1a3a 50%, #0f0f2e 100%);
+      text-align: center; padding: 40px;
+    }
+    .video-placeholder-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(232,123,26,0.12); border: 2px solid rgba(232,123,26,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; margin-bottom: 24px;
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(232,123,26,0.1); }
+      50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(232,123,26,0.15); }
+    }
+    .video-placeholder h2 {
+      font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 8px;
+    }
+    .video-placeholder p {
+      font-size: 15px; color: rgba(255,255,255,0.5); max-width: 400px;
+    }
+    .video-placeholder .countdown {
+      margin-top: 28px; display: flex; gap: 16px;
+    }
+    .countdown-item {
+      text-align: center;
+    }
+    .countdown-num {
+      display: block; font-size: 36px; font-weight: 800; color: var(--orange);
+      line-height: 1;
+    }
+    .countdown-label {
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.35);
+      text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+    }
+
+    /* Stream info bar below video */
+    .stream-info {
+      padding: 20px 24px;
+      background: rgba(255,255,255,0.03);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .stream-title {
+      font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;
+    }
+    .stream-meta {
+      display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+    }
+    .stream-meta-item {
+      font-size: 13px; color: rgba(255,255,255,0.45);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stream-meta-item strong { color: rgba(255,255,255,0.7); }
+
+    /* ===== TABS BELOW VIDEO ===== */
+    .content-tabs {
+      margin-top: 24px;
+    }
+    .tab-headers {
+      display: flex; gap: 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .tab-header {
+      padding: 14px 24px; font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.4); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s; background: none; border-top: none; border-left: none; border-right: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .tab-header:hover { color: rgba(255,255,255,0.7); }
+    .tab-header.active {
+      color: var(--orange); border-bottom-color: var(--orange);
+    }
+    .tab-content {
+      display: none; padding: 24px 0;
+    }
+    .tab-content.active { display: block; }
+
+    /* About tab */
+    .about-content h3 {
+      font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 12px;
+    }
+    .about-content p {
+      font-size: 15px; color: rgba(255,255,255,0.55); line-height: 1.75; margin-bottom: 16px;
+    }
+    .speaker-list {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px;
+    }
+    .speaker-mini {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-sm);
+    }
+    .speaker-mini img {
+      width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    .speaker-mini-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .speaker-mini-role { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+    /* Schedule tab */
+    .schedule-live { margin-top: 0; }
+    .schedule-live-item {
+      display: flex; gap: 16px; padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .schedule-live-item:last-child { border-bottom: none; }
+    .schedule-live-time {
+      flex-shrink: 0; width: 80px;
+      font-size: 13px; font-weight: 700; color: var(--teal);
+    }
+    .schedule-live-info h4 {
+      font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 2px;
+    }
+    .schedule-live-info p {
+      font-size: 13px; color: rgba(255,255,255,0.4); margin: 0;
+    }
+    .schedule-live-item.now {
+      background: rgba(232,123,26,0.06); border-radius: var(--radius-sm);
+      padding: 16px; margin: -2px -16px; border-bottom: none;
+    }
+    .schedule-live-item.now .schedule-live-time { color: var(--orange); }
+    .schedule-live-item.now::before {
+      content: 'NOW'; font-size: 10px; font-weight: 800; color: var(--orange);
+      background: rgba(232,123,26,0.15); padding: 2px 8px; border-radius: 4px;
+      letter-spacing: 1px; align-self: center; margin-right: -4px;
+    }
+
+    /* ===== LIVE CHAT SIDEBAR ===== */
+    .chat-container {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg); overflow: hidden;
+      display: flex; flex-direction: column;
+      height: calc(100vh - 108px); /* viewport minus nav */
+      position: sticky; top: 84px;
+    }
+    .chat-header {
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-header h3 {
+      font-size: 15px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chat-online {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.35);
+    }
+    .youtube-chat-frame {
+      flex: 1; width: 100%; border: 0; background: #fff; display: none;
+    }
+
+    /* Chat messages area */
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px 20px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    .chat-msg {
+      display: flex; gap: 10px;
+    }
+    .chat-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .chat-avatar.orange { background: rgba(232,123,26,0.25); }
+    .chat-avatar.teal { background: rgba(55,155,133,0.25); }
+    .chat-avatar.blue { background: rgba(27,58,107,0.4); }
+    .chat-avatar.host { background: var(--orange); }
+    .chat-msg-body { flex: 1; }
+    .chat-msg-name {
+      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7);
+      margin-bottom: 2px;
+    }
+    .chat-msg-name.host { color: var(--orange); }
+    .chat-msg-name .badge {
+      font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 3px;
+      background: var(--orange); color: #fff; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-left: 6px; vertical-align: middle;
+    }
+    .chat-msg-text {
+      font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.5;
+    }
+    .chat-msg-time {
+      font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 4px;
+    }
+
+    /* System messages */
+    .chat-system {
+      text-align: center; padding: 8px 0;
+    }
+    .chat-system p {
+      font-size: 12px; color: rgba(255,255,255,0.25); font-style: italic;
+    }
+
+    /* Chat input */
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+    }
+    .chat-input-wrap {
+      display: flex; gap: 10px;
+    }
+    .chat-input {
+      flex: 1; padding: 12px 16px; border-radius: var(--radius-full);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      color: #fff; outline: none; transition: border-color 0.2s;
+    }
+    .chat-input::placeholder { color: rgba(255,255,255,0.25); }
+    .chat-input:focus { border-color: var(--orange); }
+    .chat-send {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--orange); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .chat-send:hover { background: var(--orange-dark); transform: scale(1.05); }
+
+    /* ===== PRAYER REQUEST BANNER ===== */
+    .prayer-banner {
+      margin-top: 24px; padding: 20px 24px;
+      background: linear-gradient(135deg, rgba(55,155,133,0.1) 0%, rgba(27,58,107,0.1) 100%);
+      border: 1px solid rgba(55,155,133,0.15);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .prayer-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(55,155,133,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .prayer-text h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .prayer-text p { font-size: 13px; color: rgba(255,255,255,0.45); margin: 0; }
+    .prayer-btn {
+      margin-left: auto; padding: 10px 20px; border-radius: var(--radius-full);
+      background: var(--teal); color: #fff; font-size: 13px; font-weight: 700;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      white-space: nowrap; transition: all 0.2s;
+    }
+    .prayer-btn:hover { background: var(--teal-dark); }
+
+    /* ===== WAITING ROOM ===== */
+    .waiting-room {
+      display: none; /* shown via JS when stream hasn't started */
+      flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 80px 40px;
+      min-height: 70vh;
+    }
+    .waiting-room.active { display: flex; }
+    .waiting-room-img {
+      width: 200px; margin-bottom: 32px; border-radius: var(--radius-lg);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+    .waiting-room h1 {
+      font-size: 36px; font-weight: 800; color: #fff; margin-bottom: 12px;
+    }
+    .waiting-room p {
+      font-size: 16px; color: rgba(255,255,255,0.5); max-width: 500px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: rgba(0,0,0,0.3); padding: 24px 32px;
+      text-align: center; border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .footer p { font-size: 12px; color: rgba(255,255,255,0.25); }
+    .footer a { color: rgba(255,255,255,0.4); text-decoration: none; }
+    .footer a:hover { color: var(--orange); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .live-layout { grid-template-columns: 1fr; }
+      .chat-container { height: 500px; position: static; }
+      .nav-viewers { display: none; }
+    }
+    @media (max-width: 768px) {
+      .live-layout { padding: 16px 16px 40px; gap: 20px; }
+      .nav-inner { padding: 0 16px; height: 56px; }
+      .nav-btn-outline { display: none; }
+      .stream-info { padding: 16px; }
+      .stream-title { font-size: 17px; }
+      .speaker-list { grid-template-columns: 1fr; }
+      .countdown-num { font-size: 28px; }
+      .video-placeholder h2 { font-size: 22px; }
+    }
+
+    /* ===== PRAYER MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #1e1e3a; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-lg); padding: 40px;
+      width: 100%; max-width: 480px; margin: 20px;
+    }
+    .modal h3 {
+      font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px;
+    }
+    .modal p {
+      font-size: 14px; color: rgba(255,255,255,0.45); margin-bottom: 24px;
+    }
+    .modal label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: rgba(255,255,255,0.6); margin-bottom: 6px; margin-top: 16px;
+    }
+    .modal label:first-of-type { margin-top: 0; }
+    .modal input, .modal textarea {
+      width: 100%; padding: 12px 16px; border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      color: #fff; outline: none; transition: border-color 0.2s;
+    }
+    .modal input:focus, .modal textarea:focus { border-color: var(--teal); }
+    .modal textarea { resize: vertical; min-height: 100px; }
+    .modal-actions {
+      display: flex; gap: 12px; margin-top: 24px;
+    }
+    .modal-btn {
+      flex: 1; padding: 14px; border-radius: var(--radius-full);
+      font-size: 14px; font-weight: 700; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: all 0.2s;
+    }
+    .modal-btn-cancel {
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5);
+    }
+    .modal-btn-cancel:hover { background: rgba(255,255,255,0.1); }
+    .modal-btn-submit {
+      background: var(--teal); color: #fff;
+    }
+    .modal-btn-submit:hover { background: var(--teal-dark); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo">
+          <img src="https://www.sabwb.org/hosted/images/f7/636225135544cf8eba28cc536d207e/sabwb-final-white.png" alt="SABWB">
+          <span class="nav-logo-text">SABWB</span>
+        </a>
+        <div class="nav-divider"></div>
+        <div class="nav-live-badge" id="liveBadge">
+          <span class="nav-live-dot"></span>
+          LIVE
+        </div>
+      </div>
+      <div class="nav-right">
+        <div class="nav-viewers">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/></svg>
+          <span class="nav-viewers-count" id="viewerCount">0</span> watching
+        </div>
+        <a href="events.html" class="nav-btn nav-btn-outline">Event Details</a>
+        <a href="index.html#partner" class="nav-btn nav-btn-primary">Become A Partner</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN LAYOUT -->
+  <div class="live-layout">
+
+    <!-- LEFT: VIDEO + TABS -->
+    <div class="live-main">
+
+      <!-- VIDEO PLAYER -->
+      <div class="video-container">
+        <div class="video-wrapper" id="videoWrapper">
+          <!-- PLYR VIDEO PLAYER — hidden until live -->
+          <video id="livePlayer" style="display:none;" playsinline>
+            <!--
+              TO GO LIVE: Replace this <source> with your stream URL.
+              Supports: MP4, HLS (.m3u8), DASH, or use Plyr's YouTube/Vimeo provider.
+
+              Examples:
+              HLS Stream:    <source src="https://your-stream.m3u8" type="application/x-mpegURL">
+              MP4 (VOD):     <source src="https://your-video.mp4" type="video/mp4">
+              For YouTube:   Use data-plyr-provider="youtube" data-plyr-embed-id="VIDEO_ID" on the video element
+              For Vimeo:     Use data-plyr-provider="vimeo" data-plyr-embed-id="VIDEO_ID" on the video element
+            -->
+            <source src="" type="video/mp4">
+          </video>
+          <div class="sound-overlay hidden" id="soundOverlay" onclick="unmutePlyr()"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg> Click for sound</div>
+
+          <!-- COUNTDOWN PLACEHOLDER — shown before stream starts -->
+          <div class="video-placeholder" id="videoPlaceholder">
+            <div class="video-placeholder-icon"><svg width="32" height="32" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+            <h2>Going Live Soon</h2>
+            <p>The Time to Rise Conference live stream will begin shortly. Stay tuned!</p>
+            <div class="countdown" id="countdown">
+              <div class="countdown-item">
+                <span class="countdown-num" id="cd-days">--</span>
+                <span class="countdown-label">Days</span>
+              </div>
+              <div class="countdown-item">
+                <span class="countdown-num" id="cd-hours">--</span>
+                <span class="countdown-label">Hours</span>
+              </div>
+              <div class="countdown-item">
+                <span class="countdown-num" id="cd-mins">--</span>
+                <span class="countdown-label">Mins</span>
+              </div>
+              <div class="countdown-item">
+                <span class="countdown-num" id="cd-secs">--</span>
+                <span class="countdown-label">Secs</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="stream-info">
+          <div class="stream-title">Time to Rise — Nigeria, Radical Islam & The Global Church</div>
+          <div class="stream-meta">
+            <div class="stream-meta-item">
+              <strong>Presented by</strong> Outpouring Missions International
+            </div>
+            <div class="stream-meta-item">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> San Antonio, TX
+            </div>
+            <div class="stream-meta-item">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> May 15-16, 2026
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS: About / Schedule / Resources -->
+      <div class="content-tabs">
+        <div class="tab-headers">
+          <button class="tab-header active" data-tab="about">About</button>
+          <button class="tab-header" data-tab="schedule">Schedule</button>
+          <button class="tab-header" data-tab="resources">Resources</button>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div class="tab-content active" id="tab-about">
+          <div class="about-content">
+            <h3>About This Conference</h3>
+            <p>The <strong>Time to Rise Conference</strong> brings together leaders, pastors, and influencers from across the nation who are committed to confronting the persecution of Christians and standing boldly for international religious freedom. Presented by Outpouring Missions International with Africa Arise USA and the Save Nigeria Group.</p>
+            <p><em>"The Diaspora Rises for the Indigenous"</em> — Join us for two powerful days of worship, strategic conversations, and commissioning as we stand for the persecuted church worldwide.</p>
+
+            <h3 style="margin-top:28px;">Featured Speakers</h3>
+            <div class="speaker-list">
+              <div class="speaker-mini">
+                <img src="https://www.sabwb.org/hosted/images/06/e59c3e83b9452b8ca93a9d6f233e47/unnamed.jpg" alt="Mike Arnold">
+                <div>
+                  <div class="speaker-mini-name">Mike Arnold</div>
+                  <div class="speaker-mini-role">Conference Convener</div>
+                </div>
+              </div>
+              <div class="speaker-mini">
+                <img src="https://www.sabwb.org/hosted/images/21/44ece949984c79b469d1b8ffa228f1/unnamed-1-.jpg" alt="Stephen Osemwegie">
+                <div>
+                  <div class="speaker-mini-name">Stephen Osemwegie</div>
+                  <div class="speaker-mini-role">Save Nigeria Group USA</div>
+                </div>
+              </div>
+              <div class="speaker-mini">
+                <img src="https://www.sabwb.org/hosted/images/27/df535d8f344dd99a1e880256d7315b/unnamed-2-.jpg" alt="Pastor John Haruna">
+                <div>
+                  <div class="speaker-mini-name">Pastor John Haruna</div>
+                  <div class="speaker-mini-role">Senior Pastor, Nigeria</div>
+                </div>
+              </div>
+              <div class="speaker-mini">
+                <img src="https://www.sabwb.org/hosted/images/57/465b828fec43baab398605f7659bc4/unnamed-3-.jpg" alt="Dede Laugesen">
+                <div>
+                  <div class="speaker-mini-name">Dede Laugesen</div>
+                  <div class="speaker-mini-role">Save the Persecuted Christians</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCHEDULE TAB -->
+        <div class="tab-content" id="tab-schedule">
+          <div class="schedule-live">
+            <h3 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin-bottom:16px;">Day 1 — Thursday, May 15</h3>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">9:00 AM</div>
+              <div class="schedule-live-info">
+                <h4>Registration & Welcome</h4>
+                <p>Check-in, fellowship, and light refreshments</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">10:00 AM</div>
+              <div class="schedule-live-info">
+                <h4>Opening Session — Time to Rise</h4>
+                <p>Keynote address and worship</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">12:00 PM</div>
+              <div class="schedule-live-info">
+                <h4>Lunch & Networking</h4>
+                <p>Connect with fellow attendees and speakers</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">1:30 PM</div>
+              <div class="schedule-live-info">
+                <h4>Panel: The Global Persecution Crisis</h4>
+                <p>Mike Arnold, Stephen Osemwegie, and Pastor John Haruna</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">3:30 PM</div>
+              <div class="schedule-live-info">
+                <h4>Breakout Sessions</h4>
+                <p>Small group discussions and strategic planning</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">5:00 PM</div>
+              <div class="schedule-live-info">
+                <h4>Day 1 Close</h4>
+                <p>Evening prayer and fellowship</p>
+              </div>
+            </div>
+            <h3 style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--orange);margin:28px 0 16px;">Day 2 — Friday, May 16</h3>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">9:00 AM</div>
+              <div class="schedule-live-info">
+                <h4>Morning Worship & Prayer</h4>
+                <p>Start the day with collective prayer</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">10:00 AM</div>
+              <div class="schedule-live-info">
+                <h4>Policy & Action on Capitol Hill</h4>
+                <p>Dede Laugesen on influencing U.S. religious freedom policy</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">1:30 PM</div>
+              <div class="schedule-live-info">
+                <h4>Action Workshop: What You Can Do</h4>
+                <p>Practical steps every influencer can take in their city</p>
+              </div>
+            </div>
+            <div class="schedule-live-item">
+              <div class="schedule-live-time">3:30 PM</div>
+              <div class="schedule-live-info">
+                <h4>Closing Session & Commissioning</h4>
+                <p>Final charge, prayer, and call to action</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESOURCES TAB -->
+        <div class="tab-content" id="tab-resources">
+          <div class="about-content">
+            <h3>Conference Resources</h3>
+            <p>Download materials, handouts, and follow along with the conference using the resources below. Additional resources will be added as the conference progresses.</p>
+            <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;">
+              <a href="#" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-decoration:none;transition:background 0.2s;">
+                <span style="font-size:24px;display:flex;"><svg width="24" height="24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></span>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:#fff;">Conference Program</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);">PDF — Full schedule and speaker bios</div>
+                </div>
+              </a>
+              <a href="#" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-decoration:none;transition:background 0.2s;">
+                <span style="font-size:24px;display:flex;"><svg width="24" height="24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:#fff;">Nigeria Crisis Report</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);">PDF — Key facts and figures</div>
+                </div>
+              </a>
+              <a href="index.html#partner" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(232,123,26,0.06);border:1px solid rgba(232,123,26,0.15);border-radius:8px;text-decoration:none;transition:background 0.2s;">
+                <span style="font-size:24px;display:flex;"><svg width="24" height="24" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+                <div>
+                  <div style="font-size:14px;font-weight:700;color:var(--orange);">Become a SABWB Partner</div>
+                  <div style="font-size:12px;color:rgba(255,255,255,0.4);">Support the movement — starting at $10/mo</div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRAYER REQUEST BANNER -->
+      <div class="prayer-banner">
+        <div class="prayer-icon"><svg width="22" height="22" fill="none" stroke="var(--teal)" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="prayer-text">
+          <h4>Submit a Prayer Request</h4>
+          <p>Share your prayer needs — our team and community are praying with you.</p>
+        </div>
+        <button class="prayer-btn" onclick="openPrayerModal()">Submit Request</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: LIVE CHAT -->
+    <aside class="chat-container">
+      <div class="chat-header">
+        <h3><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align:-2px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Live Chat</h3>
+        <div class="chat-online" id="chatOnline">0 online</div>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-system">
+          <p>YouTube chat will appear here automatically when the channel is live.</p>
+        </div>
+      </div>
+      <iframe class="youtube-chat-frame" id="youtubeChatFrame" title="YouTube live chat" allowfullscreen></iframe>
+
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <input type="text" class="chat-input" placeholder="Chat opens here when YouTube is live" id="chatInput" disabled onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send" onclick="sendChat()"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>&copy; 2026 San Antonio Biblical Worldview Builders. All rights reserved. | <a href="index.html">Home</a> &bull; <a href="events.html">Events</a> &bull; <a href="index.html#partner">Partner</a></p>
+  </footer>
+
+  <!-- PRAYER REQUEST MODAL -->
+  <div class="modal-overlay" id="prayerModal">
+    <div class="modal">
+      <h3>Submit a Prayer Request</h3>
+      <p>Your request will be shared with our prayer team. All requests are kept confidential.</p>
+      <form onsubmit="submitPrayer(event)">
+        <label>Your Name</label>
+        <input type="text" placeholder="First name or anonymous" id="prayerName">
+        <label>Prayer Request</label>
+        <textarea placeholder="Share your prayer need..." id="prayerText" required></textarea>
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn-cancel" onclick="closePrayerModal()">Cancel</button>
+          <button type="submit" class="modal-btn modal-btn-submit">Submit Prayer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let activeYouTubeVideoId = null;
+
+    // ===== COUNTDOWN TO EVENT =====
+    function updateCountdown() {
+      const eventDate = new Date('2026-05-15T09:00:00-05:00'); // CDT
+      const now = new Date();
+      const diff = eventDate - now;
+
+      if (diff <= 0) {
+        // Event has started — hide countdown, show "LIVE NOW"
+        document.getElementById('countdown').style.display = 'none';
+        document.querySelector('.video-placeholder h2').textContent = 'Stream Starting...';
+        document.querySelector('.video-placeholder p').textContent = 'The conference is live! The stream will appear here momentarily.';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ===== SIMULATED VIEWER COUNT =====
+    let baseViewers = 127;
+    function updateViewers() {
+      const fluctuation = Math.floor(Math.random() * 20) - 10;
+      baseViewers = Math.max(50, baseViewers + fluctuation);
+      document.getElementById('viewerCount').textContent = baseViewers;
+      if (!activeYouTubeVideoId) document.getElementById('chatOnline').textContent = baseViewers + ' online';
+    }
+    updateViewers();
+    setInterval(updateViewers, 8000);
+
+    // ===== TABS =====
+    document.querySelectorAll('.tab-header').forEach(header => {
+      header.addEventListener('click', () => {
+        document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        header.classList.add('active');
+        document.getElementById('tab-' + header.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ===== CHAT =====
+    function sendChat() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const msg = document.createElement('div');
+      msg.className = 'chat-msg';
+      msg.innerHTML = `
+        <div class="chat-avatar orange">Y</div>
+        <div class="chat-msg-body">
+          <div class="chat-msg-name">You</div>
+          <div class="chat-msg-text">${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+          <div class="chat-msg-time">Just now</div>
+        </div>
+      `;
+
+      document.getElementById('chatMessages').appendChild(msg);
+      input.value = '';
+
+      // Auto-scroll
+      const container = document.getElementById('chatMessages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ===== PRAYER MODAL =====
+    function openPrayerModal() {
+      document.getElementById('prayerModal').classList.add('active');
+    }
+    function closePrayerModal() {
+      document.getElementById('prayerModal').classList.remove('active');
+    }
+    function submitPrayer(e) {
+      e.preventDefault();
+      const name = document.getElementById('prayerName').value || 'Anonymous';
+      const text = document.getElementById('prayerText').value;
+
+      // In production, send to backend
+      alert(`Thank you, ${name}. Your prayer request has been submitted. Our team is praying with you. 🙏`);
+      closePrayerModal();
+      document.getElementById('prayerName').value = '';
+      document.getElementById('prayerText').value = '';
+    }
+
+    // Close modal on overlay click
+    document.getElementById('prayerModal').addEventListener('click', function(e) {
+      if (e.target === this) closePrayerModal();
+    });
+
+    // ===== PLYR PLAYER SETUP =====
+    let player = null;
+
+    /**
+     * GO LIVE — call this to start the stream
+     *
+     * Usage:
+     *   goLive('https://your-video-url.mp4')                     — Direct MP4/HLS
+     *   goLive('dQw4w9WgXcQ', 'youtube')                         — YouTube video/live
+     *   goLive('347119375', 'vimeo')                              — Vimeo video
+     *
+     * For HLS streams (.m3u8), include hls.js before this script:
+     *   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>
+     */
+    function goLive(src, provider) {
+      const placeholder = document.getElementById('videoPlaceholder');
+      const videoEl = document.getElementById('livePlayer');
+      const soundOverlay = document.getElementById('soundOverlay');
+
+      // Hide placeholder, show video
+      placeholder.style.display = 'none';
+      videoEl.style.display = 'block';
+
+      if (provider === 'youtube' || provider === 'vimeo') {
+        // Replace video element with provider embed
+        videoEl.remove();
+        const div = document.createElement('div');
+        div.id = 'livePlayer';
+        div.dataset.plyrProvider = provider;
+        div.dataset.plyrEmbedId = src;
+        document.getElementById('videoWrapper').prepend(div);
+
+        player = new Plyr('#livePlayer', {
+          autoplay: true, muted: true, controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+          youtube: { noCookie: true, rel: 0, showinfo: 0, modestbranding: 1 },
+        });
+      } else {
+        // Direct video source (MP4, HLS)
+        if (src.includes('.m3u8') && window.Hls && Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(src);
+          hls.attachMedia(videoEl);
+        } else {
+          videoEl.querySelector('source').src = src;
+          videoEl.load();
+        }
+
+        player = new Plyr(videoEl, {
+          autoplay: true, muted: true,
+          controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        });
+      }
+
+      // Show "click for sound" overlay
+      soundOverlay.classList.remove('hidden');
+      setTimeout(() => soundOverlay.classList.add('hidden'), 8000);
+
+      // Click anywhere on video to unmute
+      document.querySelector('.video-wrapper').addEventListener('click', function(e) {
+        if (e.target.closest('.sound-overlay') || e.target.closest('.plyr__controls')) return;
+        unmutePlyr();
+      }, { once: true });
+
+      // Update LIVE badge
+      document.getElementById('liveBadge').innerHTML = '<span class="nav-live-dot"></span> LIVE NOW';
+    }
+
+    function unmutePlyr() {
+      if (player) { player.muted = false; player.volume = 0.8; }
+      document.getElementById('soundOverlay').classList.add('hidden');
+    }
+
+    function showYouTubeChat(videoId) {
+      const chatFrame = document.getElementById('youtubeChatFrame');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInputArea = document.querySelector('.chat-input-area');
+      const embedDomain = window.location.hostname;
+
+      chatFrame.src = `https://www.youtube.com/live_chat?v=${encodeURIComponent(videoId)}&embed_domain=${encodeURIComponent(embedDomain)}`;
+      chatFrame.style.display = 'block';
+      chatMessages.style.display = 'none';
+      chatInputArea.style.display = 'none';
+      document.getElementById('chatOnline').textContent = 'YouTube chat';
+    }
+
+    function showOfflineChat(statusText) {
+      const chatFrame = document.getElementById('youtubeChatFrame');
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInputArea = document.querySelector('.chat-input-area');
+
+      chatFrame.removeAttribute('src');
+      chatFrame.style.display = 'none';
+      chatMessages.style.display = 'flex';
+      chatInputArea.style.display = 'none';
+      document.getElementById('chatInput').disabled = true;
+      document.getElementById('chatInput').placeholder = statusText || 'Chat opens here when YouTube is live';
+    }
+
+    async function checkYouTubeLive() {
+      try {
+        const response = await fetch('/api/youtube-live', { cache: 'no-store' });
+        const data = await response.json();
+
+        if (!data.configured) {
+          document.getElementById('liveBadge').innerHTML = '<span class="nav-live-dot"></span> STANDBY';
+          showOfflineChat('YouTube live detection is not configured yet');
+          return;
+        }
+
+        if (data.live && data.videoId) {
+          if (activeYouTubeVideoId !== data.videoId) {
+            activeYouTubeVideoId = data.videoId;
+            goLive(data.videoId, 'youtube');
+            showYouTubeChat(data.videoId);
+            if (data.title) document.querySelector('.stream-title').textContent = data.title;
+          }
+          return;
+        }
+
+        if (data.upcoming && data.videoId) {
+          document.getElementById('liveBadge').innerHTML = '<span class="nav-live-dot"></span> UPCOMING';
+          showOfflineChat('YouTube chat opens when the stream starts');
+          return;
+        }
+
+        document.getElementById('liveBadge').innerHTML = '<span class="nav-live-dot"></span> STANDBY';
+        showOfflineChat('YouTube chat opens when the stream starts');
+      } catch (err) {
+        console.log('YouTube live check failed:', err.message);
+      }
+    }
+
+    window.addEventListener('load', () => {
+      checkYouTubeLive();
+      setInterval(checkYouTubeLive, 60000);
+    });
+  </script>
+  <!-- Plyr JS -->
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+</body>
+</html>

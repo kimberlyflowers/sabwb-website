@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SABWB — San Antonio Biblical Worldview Influencers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* SABWB Brand — Clean White + Blue/Orange/Teal */
+      --blue: #1B3A6B;
+      --blue-light: #2A5298;
+      --orange: #e87b1a;
+      --orange-dark: #c55d05;
+      --orange-glow: rgba(232, 123, 26, 0.08);
+      --teal: #379b85;
+      --teal-dark: #2d7d6b;
+      --gold: #D4A843;
+
+      --black: #1A1A2E;
+      --text: #1d1d1f;
+      --text-secondary: #555555;
+      --text-muted: #86868b;
+
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f7;
+      --gray-200: #e8e8ed;
+      --gray-300: #d2d2d7;
+      --border: rgba(0, 0, 0, 0.08);
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-xl: 0 24px 60px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.05);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 100px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text); background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.88); backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    .nav.scrolled { box-shadow: var(--shadow-md); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 38px; }
+    .nav-logo-text { font-size: 20px; font-weight: 800; color: var(--blue); letter-spacing: -0.5px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a {
+      font-size: 14px; font-weight: 500; color: var(--text-secondary);
+      text-decoration: none; transition: color 0.2s; letter-spacing: -0.1px;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Inter', sans-serif; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none; transition: all 0.2s;
+    }
+    .btn-primary {
+      padding: 10px 22px; border-radius: var(--radius-full);
+      background: var(--orange); color: #fff; font-size: 14px;
+      box-shadow: 0 2px 8px rgba(232,123,26,0.25);
+    }
+    .btn-primary:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,123,26,0.3); }
+    .btn-dark {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--black); color: #fff; font-size: 15px;
+    }
+    .btn-dark:hover { background: #2d2d44; transform: translateY(-1px); }
+    .btn-outline-light {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.12); color: #fff; font-size: 15px;
+      border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+    }
+    .btn-outline-light:hover { background: rgba(255,255,255,0.22); }
+    .btn-blue {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--blue); color: #fff; font-size: 15px;
+    }
+    .btn-blue:hover { background: var(--blue-light); transform: translateY(-1px); }
+    .btn-teal {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--teal); color: #fff; font-size: 15px;
+    }
+    .btn-teal:hover { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-ghost {
+      padding: 10px 22px; border-radius: var(--radius-full);
+      background: transparent; color: var(--text); font-size: 14px;
+      border: 1.5px solid var(--gray-300);
+    }
+    .btn-ghost:hover { border-color: var(--text); }
+    .btn-lg { padding: 14px 32px; font-size: 16px; }
+
+    .mobile-toggle {
+      display: none; background: none; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 8px; cursor: pointer;
+    }
+    .mobile-toggle svg { display: block; }
+
+    /* ===== HERO ===== */
+    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(27,58,107,0.7) 40%, rgba(42,82,152,0.55) 100%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 820px; margin: 0 auto; padding: 160px 32px 120px; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; margin-bottom: 28px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-full); backdrop-filter: blur(10px);
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px; background: var(--orange);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 58px); font-weight: 800;
+      color: #fff; line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--orange); }
+    .hero-sub {
+      font-size: 17px; font-weight: 400; line-height: 1.65;
+      color: rgba(255,255,255,0.7); max-width: 560px; margin: 0 auto 36px;
+      letter-spacing: -0.1px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+    .hero-proof {
+      display: flex; align-items: center; gap: 14px; margin-top: 40px; justify-content: center;
+    }
+    .hero-avatars { display: flex; }
+    .hero-avatars img {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3); object-fit: cover; margin-left: -8px;
+    }
+    .hero-avatars img:first-child { margin-left: 0; }
+    .hero-proof-text { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .hero-proof-text strong { color: rgba(255,255,255,0.9); }
+
+    /* ===== SECTIONS ===== */
+    .section { padding: 96px 32px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+    .section-label {
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--orange); margin-bottom: 12px;
+      display: block;
+    }
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 42px); font-weight: 800;
+      color: var(--text); line-height: 1.12; letter-spacing: -0.8px; margin-bottom: 14px;
+    }
+    .section-desc { font-size: 16px; color: var(--text-secondary); line-height: 1.65; letter-spacing: -0.1px; }
+
+    .bg-gray { background: var(--gray-100); }
+    .bg-dark { background: var(--black); }
+
+    /* ===== ABOUT ===== */
+    .about-grid { display: grid; grid-template-columns: 1fr 1.15fr; gap: 64px; align-items: center; }
+    .about-img-wrap { position: relative; }
+    .about-img { width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); }
+    .about-card {
+      position: absolute; bottom: -20px; left: 20px;
+      background: #fff; border-radius: var(--radius-md); padding: 14px 18px;
+      box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px;
+    }
+    .about-card-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--blue); display: flex; align-items: center;
+      justify-content: center; color: white; font-size: 16px; font-weight: 800;
+    }
+    .about-card-text { font-size: 14px; font-weight: 700; color: var(--text); }
+    .about-card-sub { font-size: 12px; color: var(--text-muted); }
+    .about-content h2 {
+      font-size: clamp(26px, 3vw, 36px); font-weight: 800;
+      color: var(--text); line-height: 1.15; letter-spacing: -0.5px; margin-bottom: 20px;
+    }
+    .about-content h2 .accent { color: var(--blue); }
+    .about-text { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 16px; letter-spacing: -0.1px; }
+    .about-sectors { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+    .sector-tag {
+      padding: 6px 14px; border-radius: var(--radius-full);
+      background: var(--gray-100); border: 1px solid var(--gray-200);
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    }
+    .about-signature {
+      margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--gray-200);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .about-sig-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gray-200); }
+    .about-sig-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .about-sig-role { font-size: 13px; color: var(--text-muted); }
+
+    /* ===== BENEFITS ===== */
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .benefit-card {
+      background: #fff; border-radius: var(--radius-lg); overflow: hidden;
+      border: 1px solid var(--gray-200); transition: all 0.3s; box-shadow: var(--shadow-sm);
+    }
+    .benefit-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gray-300); }
+    .benefit-img-wrap { position: relative; overflow: hidden; }
+    .benefit-img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.5s; }
+    .benefit-card:hover .benefit-img { transform: scale(1.04); }
+    .benefit-num {
+      position: absolute; top: 14px; left: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--orange); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
+    }
+    .benefit-body { padding: 24px; }
+    .benefit-body h3 { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 10px; letter-spacing: -0.2px; }
+    .benefit-body p { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ===== CONFERENCE ===== */
+    .conference { background: var(--black); position: relative; overflow: hidden; }
+    .conference::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,123,26,0.3), transparent);
+    }
+    .conf-hero {
+      position: relative; min-height: 460px;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 96px 32px;
+    }
+    .conf-hero-bg { position: absolute; inset: 0; }
+    .conf-hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .conf-hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(26,26,46,0.7) 0%, rgba(26,26,46,0.55) 50%, rgba(26,26,46,0.8) 100%);
+    }
+    .conf-hero-content { position: relative; z-index: 1; max-width: 650px; }
+    .conf-date-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 8px 20px; margin-bottom: 24px;
+      background: rgba(232,123,26,0.12); border: 1px solid rgba(232,123,26,0.25);
+      border-radius: var(--radius-full); font-size: 13px; font-weight: 700; color: var(--orange);
+    }
+    .conf-hero-content h2 {
+      font-size: clamp(36px, 5vw, 64px); font-weight: 800;
+      color: #fff; line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 12px;
+    }
+    .conf-hero-content .location { font-size: 18px; color: rgba(255,255,255,0.55); margin-bottom: 32px; }
+
+    .speakers-section {
+      padding: 80px 32px;
+      background: linear-gradient(180deg, var(--black) 0%, #12122a 50%, var(--black) 100%);
+      position: relative;
+    }
+    .speakers-section::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(232,123,26,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .speakers-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+    .speakers-header { text-align: center; margin-bottom: 52px; }
+    .speakers-header h3 { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .speakers-header p { font-size: 15px; color: rgba(255,255,255,0.45); }
+    .speakers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+    .speaker-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-lg); overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+    .speaker-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(232,123,26,0.08) 0%, transparent 40%);
+      opacity: 0; transition: opacity 0.4s;
+      pointer-events: none;
+    }
+    .speaker-card:hover::before { opacity: 1; }
+    .speaker-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(232,123,26,0.25);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.4), 0 0 20px rgba(232,123,26,0.08);
+    }
+    .speaker-img-wrap { position: relative; overflow: hidden; }
+    .speaker-img {
+      width: 100%; height: 270px; object-fit: cover; object-position: top;
+      transition: transform 0.5s;
+    }
+    .speaker-card:hover .speaker-img { transform: scale(1.05); }
+    .speaker-img-gradient {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+      background: linear-gradient(0deg, var(--black) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .speaker-info { padding: 22px; position: relative; }
+    .speaker-name { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 5px; }
+    .speaker-title {
+      font-size: 11px; font-weight: 700; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px;
+      display: inline-block; padding: 3px 8px;
+      background: rgba(232,123,26,0.1); border-radius: 4px;
+    }
+    .speaker-bio { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.55; }
+
+    /* ===== PRICING ===== */
+    .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .price-card {
+      background: #fff; border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg); padding: 32px 24px;
+      text-align: center; transition: all 0.3s; position: relative;
+    }
+    .price-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .price-card.featured { border: 2px solid var(--orange); box-shadow: var(--shadow-md); }
+    .price-card.featured::before {
+      content: 'Best Value'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--orange); color: #fff; font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.8px; padding: 4px 16px; border-radius: var(--radius-full);
+    }
+    .price-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px; }
+    .price-amount { font-size: 48px; font-weight: 800; color: var(--text); letter-spacing: -1px; }
+    .price-amount span { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+    .price-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.55; margin: 14px 0 22px; }
+    .price-card .btn { width: 100%; justify-content: center; }
+
+    /* ===== BOOK ===== */
+    .book-grid { display: grid; grid-template-columns: 360px 1fr; gap: 64px; align-items: center; }
+    .book-img { width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); transition: transform 0.3s; }
+    .book-img:hover { transform: rotate(-2deg) scale(1.02); }
+    .book-content h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 800; color: var(--text); letter-spacing: -0.5px; line-height: 1.15; margin-bottom: 6px; }
+    .book-author { font-size: 15px; font-weight: 600; color: var(--blue); margin-bottom: 18px; }
+    .book-content p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 24px; }
+    .book-offer {
+      display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md); margin-bottom: 24px;
+    }
+    .book-offer-badge {
+      width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+      background: var(--orange); display: flex; align-items: center;
+      justify-content: center; color: #fff; font-size: 18px;
+    }
+    .book-offer-text { font-size: 14px; font-weight: 700; color: var(--text); }
+    .book-offer-sub { font-size: 12px; color: var(--text-muted); }
+
+    /* ===== MOVEMENT ===== */
+    .movement { position: relative; overflow: hidden; }
+    .movement-bg { position: absolute; inset: 0; }
+    .movement-bg img { width: 100%; height: 100%; object-fit: cover; }
+    .movement-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(26,26,46,0.88) 0%, rgba(27,58,107,0.8) 50%, rgba(42,82,152,0.65) 100%);
+    }
+    .movement-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; text-align: center; }
+    .movement h2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; color: #fff; line-height: 1.12; letter-spacing: -0.5px; margin-bottom: 20px; }
+    .movement h2 .accent { color: var(--orange); }
+    .movement p { font-size: 16px; color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 16px; }
+    .movement-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+
+    /* ===== EVENTS ===== */
+    .events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .event-card {
+      background: #fff; border-radius: var(--radius-lg); overflow: hidden;
+      border: 1px solid var(--gray-200); text-decoration: none; color: inherit;
+      transition: all 0.3s; box-shadow: var(--shadow-sm); display: block;
+    }
+    .event-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .event-card-img-wrap { position: relative; overflow: hidden; }
+    .event-card-img-wrap img { width: 100%; height: 180px; object-fit: cover; transition: transform 0.5s; }
+    .event-card:hover .event-card-img-wrap img { transform: scale(1.04); }
+    .event-card-date {
+      position: absolute; top: 14px; right: 14px;
+      background: #fff; border-radius: var(--radius-sm); padding: 6px 10px;
+      text-align: center; box-shadow: var(--shadow-md); line-height: 1;
+    }
+    .event-month { display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); }
+    .event-day { display: block; font-size: 20px; font-weight: 800; color: var(--text); margin-top: 2px; }
+    .event-card-body { padding: 20px; }
+    .event-card-tag {
+      display: inline-block; padding: 3px 10px; background: var(--orange-glow); color: var(--orange);
+      border-radius: var(--radius-full); font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 10px;
+    }
+    .event-card-body h3 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .event-card-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 12px; }
+    .event-card-meta { display: flex; gap: 14px; font-size: 12px; color: var(--text-muted); }
+
+    /* ===== STRIPE MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(26,26,46,0.5); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--white); border-radius: var(--radius-xl);
+      max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto;
+      box-shadow: var(--shadow-xl); position: relative;
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(16px)scale(0.98)}to{opacity:1;transform:translateY(0)scale(1)} }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--gray-100); border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 16px; color: var(--text-muted); transition: all 0.2s; z-index: 1;
+    }
+    .modal-close:hover { background: var(--gray-200); }
+    .modal-header { padding: 32px 32px 0; text-align: center; }
+    .modal-header h2 { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 6px; }
+    .modal-header p { font-size: 14px; color: var(--text-secondary); }
+    .modal-tiers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 20px 32px; }
+    .modal-tier {
+      padding: 14px 8px; border-radius: var(--radius-md);
+      border: 2px solid var(--gray-200); cursor: pointer;
+      text-align: center; transition: all 0.2s; background: #fff;
+    }
+    .modal-tier:hover { border-color: var(--orange); }
+    .modal-tier.selected { border-color: var(--orange); background: var(--orange-glow); }
+    .modal-tier-price { font-size: 22px; font-weight: 800; color: var(--text); }
+    .modal-tier-price span { font-size: 11px; font-weight: 500; color: var(--text-muted); }
+    .modal-tier-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-top: 2px; }
+    .modal-form { padding: 0 32px 32px; }
+    .modal-form label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text); margin-bottom: 6px; margin-top: 14px;
+    }
+    .modal-form input {
+      width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-200); background: #fff;
+      font-family: 'Inter', sans-serif; font-size: 14px; color: var(--text);
+      transition: border-color 0.2s; outline: none;
+    }
+    .modal-form input:focus { border-color: var(--blue); }
+    .modal-form input::placeholder { color: var(--gray-300); }
+    #card-element {
+      padding: 12px 14px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-200); background: #fff;
+      transition: border-color 0.2s;
+    }
+    #card-element.StripeElement--focus { border-color: var(--blue); }
+    #card-errors { font-size: 13px; color: #e53e3e; margin-top: 8px; min-height: 20px; }
+    .modal-submit {
+      width: 100%; margin-top: 20px; padding: 14px;
+      border-radius: var(--radius-full); background: var(--orange);
+      color: #fff; font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      box-shadow: 0 2px 8px rgba(232,123,26,0.25); transition: all 0.2s;
+    }
+    .modal-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .modal-secure {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; margin-top: 12px; font-size: 12px; color: var(--text-muted);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 72px 32px 36px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-brand h3 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; margin-bottom: 14px; }
+    .footer-brand p { font-size: 14px; line-height: 1.7; }
+    .footer-address { font-size: 13px; line-height: 1.8; margin-top: 16px; }
+    .footer h4 { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 10px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--orange); }
+    .footer-bottom {
+      padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+    }
+    .footer-social { display: flex; gap: 10px; }
+    .footer-social a {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.45); text-decoration: none; font-size: 13px; transition: all 0.2s;
+    }
+    .footer-social a:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width:1024px) {
+      .speakers-grid { grid-template-columns: repeat(2,1fr); }
+      .pricing-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+    @media (max-width:768px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .section { padding: 64px 20px; }
+      .about-grid,.book-grid { grid-template-columns: 1fr; gap: 36px; }
+      .benefits-grid,.speakers-grid,.pricing-grid,.events-grid { grid-template-columns: 1fr; }
+      .pricing-grid { max-width: 380px; margin: 0 auto; }
+      .book-grid > div:first-child { max-width: 260px; margin: 0 auto; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+      .conf-hero { min-height: 360px; padding: 72px 20px; }
+      .speakers-section { padding: 48px 20px; }
+      .modal-tiers { grid-template-columns: repeat(2,1fr); }
+      .modal-header,.modal-form { padding-left: 24px; padding-right: 24px; }
+      .modal-tiers { padding-left: 24px; padding-right: 24px; }
+    }
+    @media (max-width:480px) {
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .movement-actions { flex-direction: column; align-items: center; }
+      .movement-actions .btn { width: 100%; }
+    }
+
+    /* Animations */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    @media (max-width:768px) {
+      .nav-links.mobile-open {
+        display: flex !important; flex-direction: column;
+        position: absolute; top: 64px; left: 0; right: 0;
+        background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+        padding: 20px 32px; gap: 14px;
+        border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg);
+      }
+    }
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(239,68,68,0.6); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(239,68,68,0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="https://www.sabwb.org/hosted/images/f7/636225135544cf8eba28cc536d207e/sabwb-final-white.png" alt="SABWB" style="filter: brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(600%) hue-rotate(200deg);">
+        <span class="nav-logo-text">SABWB</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#benefits">Benefits</a></li>
+        <li><a href="#conference">Conference</a></li>
+        <li><a href="#events">Events</a></li>
+        <li><a href="book.html">Book</a></li>
+        <li><a href="live.html" style="color:var(--orange);font-weight:700;display:inline-flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulse-live 1.5s ease-in-out infinite;"></span> Live</a></li>
+        <li><a href="javascript:void(0)" onclick="openModal(25)" class="btn btn-primary">Become A Partner</a></li>
+      </ul>
+      <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">
+        <svg width="24" height="24" fill="none" stroke="#1d1d1f" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO with Conference Photo -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="images/conference-hero.webp" alt="Annual SABWB Conference — Packed Auditorium">
+    </div>
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="hero-badge-dot"></span>Partnership Drive — 1,000 New Partners</div>
+      <h1>Converge. Collaborate.<br><span class="accent">Influence Your City.</span></h1>
+      <p class="hero-sub">Join SABWB's Influencers Platform — tools, training, and resources for biblical worldview leaders transforming San Antonio and beyond.</p>
+      <div class="hero-actions">
+        <a href="javascript:void(0)" onclick="openModal(10)" class="btn btn-primary btn-lg">Get Instant Access — $10/mo</a>
+        <a href="#about" class="btn btn-outline-light btn-lg">Learn More</a>
+      </div>
+      <div class="hero-proof">
+        <div class="hero-avatars">
+          <img src="https://www.sabwb.org/hosted/images/a9/7eec00cdf111e892d4fdacdf9bad2c/dad2.png" alt="">
+          <img src="https://www.sabwb.org/hosted/images/e9/fc686249ee46d3a6a1bde727f95084/people-4.png" alt="">
+          <img src="https://www.sabwb.org/hosted/images/06/e59c3e83b9452b8ca93a9d6f233e47/unnamed.jpg" alt="">
+        </div>
+        <div class="hero-proof-text"><strong>Join 1,000+ influencers</strong> across 5 key sectors</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section bg-gray" id="about">
+    <div class="section-inner">
+      <div class="about-grid">
+        <div class="about-img-wrap reveal">
+          <img class="about-img" src="https://www.sabwb.org/hosted/images/a9/7eec00cdf111e892d4fdacdf9bad2c/dad2.png" alt="Bishop Charles E. Flowers">
+          <div class="about-card">
+            <div class="about-card-icon"><svg width="18" height="18" fill="var(--orange)" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg></div>
+            <div><div class="about-card-text">Founder & Convener</div><div class="about-card-sub">SABWB Platform</div></div>
+          </div>
+        </div>
+        <div class="about-content reveal">
+          <span class="section-label">A Message From Our Leader</span>
+          <h2>Building a Network of <span class="accent">Biblical Worldview Influencers</span></h2>
+          <p class="about-text">March is our partnership drive month, and our goal is to gain 1,000 new partners and $10,000 in contributions. Partners can join for as little as $10 per month.</p>
+          <p class="about-text">SABWB's mission is to converge and collaborate with biblical worldview minded influencers across education, business, creative arts, politics, and civic sectors.</p>
+          <div class="about-sectors">
+            <span class="sector-tag">Education</span><span class="sector-tag">Business</span>
+            <span class="sector-tag">Creative Arts</span><span class="sector-tag">Politics</span>
+            <span class="sector-tag">Civic Engagement</span>
+          </div>
+          <p class="about-text">Partners connect regularly with individuals in key sectors, access upgraded communications technology, attend monthly mixers and annual city-wide events, and collaborate with national organizations.</p>
+          <div class="about-signature">
+            <img class="about-sig-avatar" src="https://www.sabwb.org/hosted/images/a9/7eec00cdf111e892d4fdacdf9bad2c/dad2.png" alt="">
+            <div><div class="about-sig-name">Bishop Charles E. Flowers</div><div class="about-sig-role">Founder, SABWB</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section class="section" id="benefits">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Partnership Privileges</span>
+        <h2 class="section-title">Partnership Has Its Privileges</h2>
+        <p class="section-desc">Join an exclusive community of city leaders and gain access to resources that amplify your influence.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal reveal-d1">
+          <div class="benefit-img-wrap">
+            <img class="benefit-img" src="https://www.sabwb.org/hosted/images/e6/e07b00cdeb11e8b772bd3c7cb1cf39/17038650_10158408610205457_8355404524341305759_o.jpg" alt="Powerhouse Influencers">
+            <div class="benefit-num">1</div>
+          </div>
+          <div class="benefit-body"><h3>Connect With Powerhouse Influencers</h3><p>Build relationships within an exclusive community of city leaders spanning education, business, creative arts, and politics.</p></div>
+        </div>
+        <div class="benefit-card reveal reveal-d2">
+          <div class="benefit-img-wrap">
+            <img class="benefit-img" src="https://www.sabwb.org/hosted/images/e6/a51fb0cdeb11e895700db21f1ba0c8/11248252_10205239646605332_8585165960148074455_n.jpg" alt="Exclusive Meet-Ups">
+            <div class="benefit-num">2</div>
+          </div>
+          <div class="benefit-body"><h3>Attend Exclusive Influencer Meet-Ups</h3><p>Participate in exclusive "Influencers Only" meetups, monthly mixers, and annual city-wide collaboration events.</p></div>
+        </div>
+        <div class="benefit-card reveal reveal-d3">
+          <div class="benefit-img-wrap">
+            <img class="benefit-img" src="https://www.sabwb.org/hosted/images/0e/7d6b00cde711e88c886f3e1bec2013/Screen-Shot-2018-10-11-at-10.35.30-PM.png" alt="Monthly Training">
+            <div class="benefit-num">3</div>
+          </div>
+          <div class="benefit-body"><h3>Monthly Developmental Training</h3><p>Receive ongoing coaching from Pastor Flowers and influential city leaders to sharpen your impact.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFERENCE -->
+  <section id="conference">
+    <div class="conf-hero">
+      <div class="conf-hero-bg">
+        <img src="https://www.sabwb.org/hosted/images/2b/bf92baf92f4db281e96b257e24641c/d9b7ea58920559dc29148cf745b2b8cdbd19eb1a-1.jpg" alt="Time to Rise Conference">
+      </div>
+      <div class="conf-hero-content reveal">
+        <div class="conf-date-badge">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="12" height="12" rx="2"/><path d="M11 2v4M7 2v4M3 9h12"/></svg>
+          May 15 — 16, San Antonio TX
+        </div>
+        <h2>Time to Rise</h2>
+        <p class="location">A gathering of world-changers confronting persecution and standing for religious freedom</p>
+        <a href="events.html" class="btn btn-primary btn-lg" data-event-link="conference">Register For This Conference</a>
+        <a href="live.html" class="btn btn-ghost btn-lg" style="border-color:rgba(255,255,255,0.3);color:#fff;margin-left:12px;display:inline-flex;align-items:center;gap:8px;"><span style="width:8px;height:8px;background:#ef4444;border-radius:50%;display:inline-block;"></span> Watch Live</a>
+      </div>
+    </div>
+    <div class="speakers-section">
+      <div class="speakers-inner">
+        <div class="speakers-header reveal"><h3>Featured Speakers</h3><p>Leaders from across the nation committed to making a difference</p></div>
+        <div class="speakers-grid">
+          <div class="speaker-card reveal reveal-d1">
+            <div class="speaker-img-wrap"><img class="speaker-img" src="https://www.sabwb.org/hosted/images/06/e59c3e83b9452b8ca93a9d6f233e47/unnamed.jpg" alt="Mike Arnold"><div class="speaker-img-gradient"></div></div>
+            <div class="speaker-info"><div class="speaker-name">Mike Arnold</div><div class="speaker-title">Conference Convener</div><div class="speaker-bio">Former mayor, bestselling author, 16+ visits to Nigeria, founded Africa Arise schools.</div></div>
+          </div>
+          <div class="speaker-card reveal reveal-d2">
+            <div class="speaker-img-wrap"><img class="speaker-img" src="https://www.sabwb.org/hosted/images/21/44ece949984c79b469d1b8ffa228f1/unnamed-1-.jpg" alt="Stephen Osemwegie"><div class="speaker-img-gradient"></div></div>
+            <div class="speaker-info"><div class="speaker-name">Stephen Osemwegie</div><div class="speaker-title">Save Nigeria Group USA</div><div class="speaker-bio">Bridges Nigerian and American Christian communities through policy action and prayer.</div></div>
+          </div>
+          <div class="speaker-card reveal reveal-d3">
+            <div class="speaker-img-wrap"><img class="speaker-img" src="https://www.sabwb.org/hosted/images/27/df535d8f344dd99a1e880256d7315b/unnamed-2-.jpg" alt="Pastor John Haruna"><div class="speaker-img-gradient"></div></div>
+            <div class="speaker-info"><div class="speaker-name">Pastor John Haruna</div><div class="speaker-title">Senior Pastor, Nigeria</div><div class="speaker-bio">Continues faithful ministry despite burying 500+ church members from attacks.</div></div>
+          </div>
+          <div class="speaker-card reveal">
+            <div class="speaker-img-wrap"><img class="speaker-img" src="https://www.sabwb.org/hosted/images/57/465b828fec43baab398605f7659bc4/unnamed-3-.jpg" alt="Dede Laugesen"><div class="speaker-img-gradient"></div></div>
+            <div class="speaker-info"><div class="speaker-name">Dede Laugesen</div><div class="speaker-title">Save the Persecuted Christians</div><div class="speaker-bio">National leader on international religious freedom, influences U.S. policy.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section bg-gray" id="partner">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Become A Partner</span>
+        <h2 class="section-title">Get Instant & Unlimited Access</h2>
+        <p class="section-desc">Choose the partnership level that works for you. Every tier includes full access to the Influencers Platform.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal"><div class="price-name">Supporter</div><div class="price-amount">$10<span>/mo</span></div><p class="price-desc">Full platform access, monthly mixers, and community resources.</p><a href="javascript:void(0)" onclick="openModal(10)" class="btn btn-ghost">Get Started</a></div>
+        <div class="price-card featured reveal"><div class="price-name">Partner</div><div class="price-amount">$25<span>/mo</span></div><p class="price-desc">Everything in Supporter + free copy of "The Footprints of a Prophet."</p><a href="javascript:void(0)" onclick="openModal(25)" class="btn btn-primary">Join Now</a></div>
+        <div class="price-card reveal"><div class="price-name">Champion</div><div class="price-amount">$50<span>/mo</span></div><p class="price-desc">All Partner benefits + priority events and VIP networking.</p><a href="javascript:void(0)" onclick="openModal(50)" class="btn btn-teal">Join Now</a></div>
+        <div class="price-card reveal"><div class="price-name">Catalyst</div><div class="price-amount">$100<span>/mo</span></div><p class="price-desc">Maximum impact. Sponsor events and shape the mission.</p><a href="javascript:void(0)" onclick="openModal(100)" class="btn btn-dark">Join Now</a></div>
+      </div>
+      <p style="text-align:center;margin-top:18px;font-size:12px;color:var(--text-muted);display:flex;align-items:center;justify-content:center;gap:6px;">
+        <svg width="14" height="14" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="3" y="7" width="8" height="6" rx="1"/><path d="M5 7V5.5a2.5 2.5 0 0 1 5 0V7"/></svg>
+        Secured by Stripe &bull; Cancel anytime
+      </p>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section" id="events">
+    <div class="section-inner">
+      <div class="section-header reveal">
+        <span class="section-label">Upcoming Events</span>
+        <h2 class="section-title">Get Involved</h2>
+        <p class="section-desc">Join us at upcoming gatherings, mixers, and community events across San Antonio.</p>
+      </div>
+      <div class="events-grid">
+        <a href="events.html" class="event-card reveal reveal-d1" data-event-link="marchMixer">
+          <div class="event-card-img-wrap"><img src="https://www.sabwb.org/hosted/images/43/b932a1445149b9ba9e92d670b66b14/hoodmen2.png" alt="March Mixer"><div class="event-card-date"><span class="event-month">MAR</span><span class="event-day">15</span></div></div>
+          <div class="event-card-body"><div class="event-card-tag">Monthly Mixer</div><h3>March Influencers Mixer</h3><p>Connect with fellow influencers at our monthly networking mixer.</p><div class="event-card-meta"><span>San Antonio, TX</span><span>6:00 PM</span></div></div>
+        </a>
+        <a href="events.html" class="event-card reveal reveal-d2" data-event-link="businessMeetup">
+          <div class="event-card-img-wrap"><img src="https://www.sabwb.org/hosted/images/da/604f0549cb4ae0979e482bc0d9491a/MATCHED-Real-Estate-Flyer-.png" alt="Business Meetup"><div class="event-card-date"><span class="event-month">APR</span><span class="event-day">22</span></div></div>
+          <div class="event-card-body"><div class="event-card-tag">Special Event</div><h3>Business Influencers Meetup</h3><p>Collaborate on community development strategies with business leaders.</p><div class="event-card-meta"><span>San Antonio, TX</span><span>7:00 PM</span></div></div>
+        </a>
+        <a href="events.html" class="event-card reveal reveal-d3" data-event-link="conference">
+          <div class="event-card-img-wrap"><img src="https://www.sabwb.org/hosted/images/76/e4399be63743aa8162e6d1e7088b5b/Beige-Minimal-Aesthetic-Photo-Collage-.png" alt="Conference"><div class="event-card-date"><span class="event-month">MAY</span><span class="event-day">15</span></div></div>
+          <div class="event-card-body"><div class="event-card-tag">Conference</div><h3>Time to Rise Conference</h3><p>Two days with leaders standing for religious freedom.</p><div class="event-card-meta"><span>San Antonio, TX</span><span>May 15-16</span></div></div>
+        </a>
+      </div>
+      <div style="text-align:center;margin-top:36px;"><a href="events.html" class="btn btn-ghost" data-event-link="allEvents">View All Events</a></div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="section bg-gray" id="resources">
+    <div class="section-inner">
+      <div class="book-grid">
+        <div class="reveal"><img class="book-img" src="https://www.sabwb.org/hosted/images/58/9c8dd2609745ee8aba7651d100ef32/Man-Silhouette-ThrillerMystery-Book-Cover-1-.png" alt="The Footprints of a Prophet"></div>
+        <div class="book-content reveal">
+          <span class="section-label">Featured Resource</span>
+          <h2>The Footprints of a Prophet</h2>
+          <div class="book-author">By Bishop Charles E. Flowers</div>
+          <p>A powerful exploration of prophetic leadership and the footsteps that shape nations. This book will challenge your understanding of influence and inspire you to step into your calling.</p>
+          <div class="book-offer">
+            <div class="book-offer-badge"><svg width="20" height="20" fill="none" stroke="var(--orange)" stroke-width="2" viewBox="0 0 24 24"><path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
+            <div><div class="book-offer-text">Free with any donation of $25+</div><div class="book-offer-sub">Get your copy as a thank-you for your generous support</div></div>
+          </div>
+          <a href="book.html" class="btn btn-primary btn-lg">Get Your Copy Here</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOVEMENT -->
+  <section class="section movement" id="movement">
+    <div class="movement-bg"><img src="https://www.sabwb.org/hosted/images/e6/a51fb0cdeb11e895700db21f1ba0c8/11248252_10205239646605332_8585165960148074455_n.jpg" alt="The People's Movement"></div>
+    <div class="section-inner">
+      <div class="movement-inner reveal">
+        <span class="section-label" style="color:var(--orange)">The People's Movement</span>
+        <h2>Citizens Unwilling to <span class="accent">Sit Back and Do Nothing</span></h2>
+        <p>The People's Movement comprises citizens unwilling to sit back while constitutional rights are eroded. We are committed to nonviolent direct action against institutions that threaten our liberties.</p>
+        <p>We challenge assumptions about political party loyalty and emphasize Christian minority values. It's time to awaken a generation to the destiny of a nation.</p>
+        <div class="movement-actions">
+          <a href="events.html" class="btn btn-primary btn-lg" data-event-link="rally">Register For Rally</a>
+          <a href="events.html" class="btn btn-outline-light btn-lg" data-event-link="marchMixer">Register For March Mixer</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>SABWB</h3>
+          <p>Converging and collaborating with biblical worldview minded influencers across education, business, creative arts, politics, and civic sectors.</p>
+          <div class="footer-address">8023 Vantage Dr. #313<br>San Antonio, TX 78230<br>(210) 799-3857</div>
+        </div>
+        <div><h4>Platform</h4><ul class="footer-links"><li><a href="#about">About Us</a></li><li><a href="#benefits">Benefits</a></li><li><a href="#partner">Partnership</a></li><li><a href="#resources">Resources</a></li></ul></div>
+        <div><h4>Events</h4><ul class="footer-links"><li><a href="events.html" data-event-link="conference">Time to Rise</a></li><li><a href="events.html" data-event-link="allEvents">All Events</a></li><li><a href="live.html">Watch Live</a></li><li><a href="#">Prayer Points</a></li></ul></div>
+        <div><h4>Resources</h4><ul class="footer-links"><li><a href="book.html">Get the Book</a></li><li><a href="#">Donate</a></li><li><a href="#">Members Log In</a></li><li><a href="#">Contact Us</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 SABWB. All rights reserved.</span>
+        <div class="footer-social"><a href="#"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a><a href="#"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4l6.5 8L4 20h2l5.5-6.8L16 20h4l-7-8.7L20 4h-2l-5 6.2L9 4H4z"/></svg></a><a href="#"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.94 2C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 001.94-2A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg></a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- STRIPE PAYMENT MODAL -->
+  <div class="modal-overlay" id="partnerModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-header">
+        <h2>Become a Partner</h2>
+        <p>Secure monthly partnership via Stripe</p>
+      </div>
+      <div class="modal-tiers">
+        <div class="modal-tier" onclick="selectTier(this,10)" data-amount="10"><div class="modal-tier-price">$10<span>/mo</span></div><div class="modal-tier-name">Supporter</div></div>
+        <div class="modal-tier selected" onclick="selectTier(this,25)" data-amount="25"><div class="modal-tier-price">$25<span>/mo</span></div><div class="modal-tier-name">Partner</div></div>
+        <div class="modal-tier" onclick="selectTier(this,50)" data-amount="50"><div class="modal-tier-price">$50<span>/mo</span></div><div class="modal-tier-name">Champion</div></div>
+        <div class="modal-tier" onclick="selectTier(this,100)" data-amount="100"><div class="modal-tier-price">$100<span>/mo</span></div><div class="modal-tier-name">Catalyst</div></div>
+      </div>
+      <div class="modal-form">
+        <label>Full Name</label>
+        <input type="text" placeholder="John Smith" id="pName">
+        <label>Email Address</label>
+        <input type="email" placeholder="john@example.com" id="pEmail">
+        <label>Card Details</label>
+        <div id="card-element"></div>
+        <div id="card-errors" role="alert"></div>
+        <button class="modal-submit" id="submitBtn" onclick="handleStripePayment()">Start Partnership — $25/mo</button>
+        <div class="modal-secure">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="8" height="6" rx="1"/><path d="M5 7V5.5a2.5 2.5 0 0 1 5 0V7"/></svg>
+          Secured by Stripe &bull; 256-bit encryption &bull; Cancel anytime
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== NAV =====
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
+
+    // ===== SCROLL REVEAL =====
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ===== SMOOTH SCROLL =====
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', function(e) {
+        const t = document.querySelector(this.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); document.querySelector('.nav-links').classList.remove('mobile-open'); }
+      });
+    });
+
+    let stripe, elements, cardElement;
+    let selectedAmount = 25;
+    const tierNames = {10:'Supporter',25:'Partner',50:'Champion',100:'Catalyst'};
+
+    // Initialize Stripe Elements when modal first opens
+    async function initStripe() {
+      if (stripe) return; // already initialized
+      const configRes = await fetch('/api/stripe-config');
+      const config = await configRes.json();
+      if (!config.publishableKey) {
+        throw new Error('Payment system not configured yet. Please contact us directly.');
+      }
+      stripe = Stripe(config.publishableKey);
+      elements = stripe.elements({
+        fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap' }]
+      });
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '15px',
+            color: '#1d1d1f',
+            '::placeholder': { color: '#d2d2d7' }
+          },
+          invalid: { color: '#e53e3e' }
+        }
+      });
+      cardElement.mount('#card-element');
+      cardElement.on('change', function(event) {
+        document.getElementById('card-errors').textContent = event.error ? event.error.message : '';
+      });
+    }
+
+    async function openModal(amount) {
+      selectedAmount = amount || 25;
+      document.getElementById('partnerModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      document.querySelectorAll('.modal-tier').forEach(t => {
+        t.classList.toggle('selected', parseInt(t.dataset.amount) === selectedAmount);
+      });
+      updateSubmitBtn();
+      try {
+        await initStripe();
+      } catch (err) {
+        document.getElementById('card-errors').textContent = err.message;
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('partnerModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function selectTier(el, amount) {
+      selectedAmount = amount;
+      document.querySelectorAll('.modal-tier').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      updateSubmitBtn();
+    }
+
+    function updateSubmitBtn() {
+      document.getElementById('submitBtn').textContent =
+        'Start ' + (tierNames[selectedAmount]||'Partnership') + ' — $' + selectedAmount + '/mo';
+    }
+
+    // Close modal on overlay click or Escape
+    document.getElementById('partnerModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+    // ===== HANDLE STRIPE PAYMENT =====
+    async function handleStripePayment() {
+      const name = document.getElementById('pName').value.trim();
+      const email = document.getElementById('pEmail').value.trim();
+      const btn = document.getElementById('submitBtn');
+      const errorEl = document.getElementById('card-errors');
+
+      if (!name || !email) { errorEl.textContent = 'Please enter your name and email.'; return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        await initStripe();
+        // Step 1: Create payment method with Stripe
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+          billing_details: { name, email }
+        });
+
+        if (error) {
+          errorEl.textContent = error.message;
+          btn.disabled = false;
+          updateSubmitBtn();
+          return;
+        }
+
+        // Step 2: Send to your backend to create subscription
+        const response = await fetch('/api/create-subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentMethodId: paymentMethod.id,
+            email,
+            name,
+            amount: selectedAmount,
+            tier: tierNames[selectedAmount]
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+          errorEl.textContent = result.error;
+          btn.disabled = false;
+          updateSubmitBtn();
+          return;
+        }
+
+        // Step 3: Handle 3D Secure if required
+        if (result.requiresAction) {
+          const { error: confirmError } = await stripe.confirmCardPayment(result.clientSecret);
+          if (confirmError) {
+            errorEl.textContent = confirmError.message;
+            btn.disabled = false;
+            updateSubmitBtn();
+            return;
+          }
+        }
+
+        // Success!
+        btn.textContent = "Welcome to SABWB!";
+        btn.style.background = '#379b85';
+        setTimeout(closeModal, 2500);
+
+      } catch (err) {
+        errorEl.textContent = 'Something went wrong. Please try again.';
+        btn.disabled = false;
+        updateSubmitBtn();
+      }
+    }
+  </script>
+  <script src="event-links.js"></script>
+</body>
+</html>

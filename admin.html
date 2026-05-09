@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SABWB Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #f5f5f7; color: #1d1d1f; }
+    header { background: #1A1A2E; color: #fff; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 20px; margin: 0; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px; display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
+    .panel { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .panel-head { padding: 18px 20px; border-bottom: 1px solid rgba(0,0,0,0.08); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .panel-head h2 { font-size: 16px; margin: 0; }
+    .panel-body { padding: 20px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: #555; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+    input, textarea, select { width: 100%; padding: 11px 12px; border: 1px solid #d2d2d7; border-radius: 8px; font: inherit; background: #fff; }
+    textarea { min-height: 100px; resize: vertical; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .checks { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+    .checks label { margin: 0; display: flex; align-items: center; gap: 8px; text-transform: none; letter-spacing: 0; font-size: 14px; color: #1d1d1f; }
+    .checks input { width: auto; }
+    button { border: 0; border-radius: 999px; padding: 10px 16px; font: inherit; font-weight: 700; cursor: pointer; background: #e87b1a; color: #fff; }
+    button.secondary { background: #1B3A6B; }
+    button.ghost { background: transparent; color: #1B3A6B; border: 1px solid rgba(27,58,107,0.25); }
+    button.danger { background: #b42318; }
+    .event-list { display: flex; flex-direction: column; gap: 10px; }
+    .event-item { width: 100%; text-align: left; border: 1px solid rgba(0,0,0,0.08); background: #fff; color: #1d1d1f; border-radius: 8px; padding: 12px; }
+    .event-item strong { display: block; font-size: 14px; }
+    .event-item span { display: block; font-size: 12px; color: #666; margin-top: 3px; }
+    .status { color: #555; font-size: 13px; }
+    .hidden { display: none; }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    @media (max-width: 900px) { main { grid-template-columns: 1fr; padding: 18px; } .row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SABWB Events Admin</h1>
+    <button class="ghost hidden" id="signOutBtn">Sign Out</button>
+  </header>
+
+  <main>
+    <section class="panel" id="loginPanel">
+      <div class="panel-head"><h2>Admin Login</h2></div>
+      <div class="panel-body">
+        <p class="status">Sign in to add and update site events.</p>
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="admin@example.com">
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" type="password" placeholder="Your password">
+        <div class="actions">
+          <button id="loginBtn">Log In</button>
+          <button class="ghost" id="magicLinkBtn">Email Me a Login Link</button>
+        </div>
+        <p class="status" id="loginStatus"></p>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="listPanel">
+      <div class="panel-head">
+        <h2>Events</h2>
+        <button class="secondary" id="newEventBtn">New Event</button>
+      </div>
+      <div class="panel-body">
+        <div class="event-list" id="eventList"></div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="editorPanel">
+      <div class="panel-head">
+        <h2 id="editorTitle">New Event</h2>
+        <span class="status" id="saveStatus"></span>
+      </div>
+      <div class="panel-body">
+        <form id="eventForm">
+          <input type="hidden" id="eventId">
+          <div class="row">
+            <div>
+              <label for="title">Title</label>
+              <input id="title" required>
+            </div>
+            <div>
+              <label for="slug">Slug</label>
+              <input id="slug" required placeholder="time-to-rise-conference">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="eventType">Event Type</label>
+              <input id="eventType" value="Event">
+            </div>
+            <div>
+              <label for="location">Location</label>
+              <input id="location" placeholder="San Antonio, TX">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="startsAt">Start Date/Time</label>
+              <input id="startsAt" type="datetime-local">
+            </div>
+            <div>
+              <label for="endsAt">End Date/Time</label>
+              <input id="endsAt" type="datetime-local">
+            </div>
+          </div>
+          <label for="shortDescription">Short Description</label>
+          <textarea id="shortDescription"></textarea>
+          <label for="fullDescription">Full Description</label>
+          <textarea id="fullDescription"></textarea>
+          <div class="row">
+            <div>
+              <label for="heroImageUrl">Hero Image URL</label>
+              <input id="heroImageUrl" type="url">
+            </div>
+            <div>
+              <label for="cardImageUrl">Card Image URL</label>
+              <input id="cardImageUrl" type="url">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="registrationUrl">GHL Registration URL</label>
+              <input id="registrationUrl" type="url" placeholder="https://api.leadconnectorhq.com/widget/booking/...">
+            </div>
+            <div>
+              <label for="liveUrl">Live/YouTube URL</label>
+              <input id="liveUrl" type="url">
+            </div>
+          </div>
+          <div class="row">
+            <div>
+              <label for="ticketPrice">Ticket Price</label>
+              <input id="ticketPrice" type="number" min="0" step="0.01">
+            </div>
+            <div>
+              <label for="venueNote">Venue Note</label>
+              <input id="venueNote" placeholder="Venue details sent upon registration">
+            </div>
+          </div>
+          <label for="speakers">Speakers</label>
+          <textarea id="speakers" placeholder="One speaker per line: Name | Role | Image URL | Short bio"></textarea>
+          <label for="schedule">Schedule</label>
+          <textarea id="schedule" placeholder="One item per line: 9:00 AM | Opening Session | Welcome and worship"></textarea>
+          <label for="galleryImages">Gallery Image URLs, one per line</label>
+          <textarea id="galleryImages"></textarea>
+          <div class="checks">
+            <label><input id="isPaid" type="checkbox"> Paid event</label>
+            <label><input id="published" type="checkbox"> Published</label>
+            <label><input id="showOnHomepage" type="checkbox" checked> Show on homepage</label>
+          </div>
+          <div class="actions">
+            <button type="submit">Save Event</button>
+            <button type="button" class="ghost" id="resetBtn">Clear</button>
+            <button type="button" class="danger hidden" id="deleteBtn">Delete</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

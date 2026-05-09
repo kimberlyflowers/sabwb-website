@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Footprints of a Prophet — Bishop Charles E. Flowers | SABWB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --blue: #1B3A6B;
+      --blue-light: #2A5298;
+      --orange: #e87b1a;
+      --orange-dark: #c55d05;
+      --orange-glow: rgba(232, 123, 26, 0.08);
+      --teal: #379b85;
+      --teal-dark: #2d7d6b;
+      --black: #1A1A2E;
+      --text: #1d1d1f;
+      --text-secondary: #555555;
+      --text-muted: #86868b;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f7;
+      --gray-200: #e8e8ed;
+      --gray-300: #d2d2d7;
+      --border: rgba(0,0,0,0.08);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.03);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-xl: 0 24px 60px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.05);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-full: 100px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text); background: var(--white);
+      -webkit-font-smoothing: antialiased; line-height: 1.5;
+    }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(255,255,255,0.88); backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo img { height: 36px; }
+    .nav-logo-text { font-size: 20px; font-weight: 800; color: var(--blue); letter-spacing: -0.5px; }
+    .nav-back {
+      font-size: 14px; font-weight: 600; color: var(--text-secondary);
+      text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--orange); }
+
+    /* ===== BOOK HERO ===== */
+    .book-hero {
+      max-width: 1280px; margin: 0 auto; padding: 80px 32px 60px;
+      display: grid; grid-template-columns: 400px 1fr; gap: 80px; align-items: center;
+    }
+
+    /* Book image with 3D effect */
+    .book-3d {
+      position: relative; perspective: 1200px;
+    }
+    .book-3d-inner {
+      transform: rotateY(-8deg);
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+    }
+    .book-3d:hover .book-3d-inner { transform: rotateY(-2deg) scale(1.02); }
+    .book-3d img {
+      width: 100%; border-radius: var(--radius-lg);
+      box-shadow:
+        -20px 15px 50px rgba(0,0,0,0.15),
+        -5px 5px 20px rgba(0,0,0,0.08),
+        0 0 0 1px rgba(0,0,0,0.04);
+    }
+    /* Spine shadow */
+    .book-3d-inner::after {
+      content: ''; position: absolute;
+      top: 4%; left: -3px; width: 6px; height: 92%;
+      background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent);
+      border-radius: 2px 0 0 2px;
+    }
+    /* Badge */
+    .book-badge {
+      position: absolute; top: -12px; right: -12px; z-index: 2;
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--orange); color: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(232,123,26,0.4);
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+    .book-badge-text { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .book-badge-price { font-size: 18px; font-weight: 900; line-height: 1; }
+    @keyframes badgePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    /* Book info */
+    .book-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: var(--radius-full);
+      background: var(--orange-glow); border: 1px solid rgba(232,123,26,0.15);
+      font-size: 12px; font-weight: 700; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;
+    }
+    .book-title {
+      font-size: clamp(32px, 4vw, 48px); font-weight: 900;
+      color: var(--text); letter-spacing: -1px; line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .book-author {
+      font-size: 17px; font-weight: 600; color: var(--blue); margin-bottom: 24px;
+    }
+    .book-desc {
+      font-size: 17px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 32px;
+    }
+
+    /* Stars */
+    .book-stars {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 28px;
+    }
+    .stars { font-size: 20px; color: #f59e0b; letter-spacing: 2px; }
+    .stars-text { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+
+    /* Pricing options */
+    .book-options {
+      display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px;
+    }
+    .book-option {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 20px; border-radius: var(--radius-md);
+      border: 2px solid var(--gray-200); cursor: pointer;
+      transition: all 0.25s; position: relative;
+    }
+    .book-option:hover { border-color: var(--gray-300); }
+    .book-option.selected {
+      border-color: var(--orange); background: rgba(232,123,26,0.03);
+    }
+    .book-option-radio {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--gray-300); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .book-option.selected .book-option-radio {
+      border-color: var(--orange);
+    }
+    .book-option.selected .book-option-radio::after {
+      content: ''; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--orange);
+    }
+    .book-option-info { flex: 1; }
+    .book-option-name { font-size: 16px; font-weight: 700; color: var(--text); }
+    .book-option-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .book-option-price {
+      font-size: 20px; font-weight: 800; color: var(--text);
+    }
+    .book-option-price .old {
+      text-decoration: line-through; color: var(--text-muted); font-weight: 400; font-size: 14px;
+      margin-right: 4px;
+    }
+    .book-option-badge {
+      position: absolute; top: -10px; right: 16px;
+      padding: 3px 12px; border-radius: var(--radius-full);
+      background: var(--teal); color: #fff;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* CTA button */
+    .book-cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 18px 48px; border-radius: var(--radius-full);
+      background: var(--orange); color: #fff; font-size: 17px; font-weight: 700;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      box-shadow: 0px 4px 20px rgba(232,123,26,0.35);
+      transition: all 0.25s; width: 100%;
+    }
+    .book-cta:hover {
+      background: var(--orange-dark); transform: translateY(-2px);
+      box-shadow: 0px 8px 30px rgba(232,123,26,0.45);
+    }
+    .book-guarantee {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 14px; font-size: 13px; color: var(--text-muted);
+    }
+
+    /* ===== WHAT'S INSIDE ===== */
+    .whats-inside {
+      background: var(--gray-100); padding: 80px 32px;
+    }
+    .whats-inside-inner {
+      max-width: 900px; margin: 0 auto;
+    }
+    .whats-inside h2 {
+      font-size: 32px; font-weight: 800; color: var(--text);
+      text-align: center; margin-bottom: 12px;
+    }
+    .whats-inside > .subtitle {
+      text-align: center; font-size: 16px; color: var(--text-muted); margin-bottom: 48px;
+    }
+    .chapter-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .chapter-card {
+      padding: 24px; background: #fff; border-radius: var(--radius-md);
+      border: 1px solid var(--border); transition: all 0.3s;
+    }
+    .chapter-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .chapter-num {
+      font-size: 12px; font-weight: 800; color: var(--orange);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .chapter-title {
+      font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px;
+    }
+    .chapter-desc {
+      font-size: 14px; color: var(--text-muted); line-height: 1.6;
+    }
+
+    /* ===== ABOUT AUTHOR ===== */
+    .about-author {
+      max-width: 900px; margin: 0 auto; padding: 80px 32px;
+      display: grid; grid-template-columns: 200px 1fr; gap: 48px; align-items: center;
+    }
+    .author-img {
+      width: 200px; height: 200px; border-radius: 50%; object-fit: cover;
+      border: 4px solid var(--gray-200); box-shadow: var(--shadow-lg);
+    }
+    .about-author h2 {
+      font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 6px;
+    }
+    .about-author .author-role {
+      font-size: 15px; font-weight: 600; color: var(--orange); margin-bottom: 16px;
+    }
+    .about-author p {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.8;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+      background: var(--black); padding: 80px 32px;
+    }
+    .testimonials-inner {
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .testimonials h2 {
+      font-size: 28px; font-weight: 800; color: #fff; margin-bottom: 48px;
+    }
+    .testimonial-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: left;
+    }
+    .testimonial {
+      padding: 28px; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-md);
+    }
+    .testimonial-text {
+      font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.75;
+      font-style: italic; margin-bottom: 16px;
+    }
+    .testimonial-author {
+      font-size: 14px; font-weight: 700; color: #fff;
+    }
+    .testimonial-role {
+      font-size: 12px; color: rgba(255,255,255,0.35);
+    }
+
+    /* ===== BOTTOM CTA ===== */
+    .bottom-cta {
+      text-align: center; padding: 80px 32px;
+      background: linear-gradient(180deg, var(--gray-100) 0%, #fff 100%);
+    }
+    .bottom-cta h2 {
+      font-size: 32px; font-weight: 800; color: var(--text); margin-bottom: 12px;
+    }
+    .bottom-cta p {
+      font-size: 16px; color: var(--text-muted); margin-bottom: 32px;
+    }
+    .bottom-cta .book-cta { width: auto; display: inline-flex; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--black); padding: 40px 32px; text-align: center;
+    }
+    .footer p { font-size: 13px; color: rgba(255,255,255,0.4); }
+    .footer a { color: rgba(255,255,255,0.6); text-decoration: none; }
+    .footer a:hover { color: var(--orange); }
+
+    /* ===== CHECKOUT MODAL ===== */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #fff; border-radius: var(--radius-lg);
+      padding: 40px; width: 100%; max-width: 480px; margin: 20px;
+      box-shadow: var(--shadow-xl);
+    }
+    .modal h3 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .modal .modal-price { font-size: 16px; color: var(--orange); font-weight: 700; margin-bottom: 24px; }
+    .modal label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text); margin-bottom: 6px; margin-top: 16px;
+    }
+    .modal label:first-of-type { margin-top: 0; }
+    .modal input {
+      width: 100%; padding: 12px 16px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-200); background: #fff;
+      font-family: 'Inter', sans-serif; font-size: 15px;
+      color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .modal input:focus { border-color: var(--orange); }
+    #card-element {
+      padding: 14px 16px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--gray-200); background: #fff;
+      transition: border-color 0.2s; margin-top: 4px;
+    }
+    #card-element.StripeElement--focus { border-color: var(--orange); }
+    .modal-buy {
+      width: 100%; margin-top: 24px; padding: 16px;
+      border-radius: var(--radius-full); background: var(--orange);
+      color: #fff; font-size: 16px; font-weight: 700;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      box-shadow: 0px 4px 14px rgba(232,123,26,0.3); transition: all 0.25s;
+    }
+    .modal-buy:hover { background: var(--orange-dark); }
+    .modal-buy:disabled { opacity: 0.6; cursor: not-allowed; }
+    .modal-cancel {
+      width: 100%; margin-top: 10px; padding: 12px;
+      border-radius: var(--radius-full); background: var(--gray-100);
+      color: var(--text-muted); font-size: 14px; font-weight: 600;
+      border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .modal-error {
+      color: #ef4444; font-size: 13px; margin-top: 12px; display: none;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .book-hero { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px; }
+      .book-3d { max-width: 300px; margin: 0 auto; }
+      .chapter-grid { grid-template-columns: 1fr; }
+      .about-author { grid-template-columns: 1fr; text-align: center; }
+      .author-img { margin: 0 auto; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Animations */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="https://www.sabwb.org/hosted/images/f7/636225135544cf8eba28cc536d207e/sabwb-final-white.png" alt="SABWB" style="filter: brightness(0) saturate(100%) invert(12%) sepia(60%) saturate(600%) hue-rotate(350deg);">
+        <span class="nav-logo-text">SABWB</span>
+      </a>
+      <a href="index.html" class="nav-back">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 4l-4 4 4 4"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <!-- BOOK HERO -->
+  <section class="book-hero">
+    <div class="book-3d reveal">
+      <div class="book-3d-inner">
+        <img src="https://www.sabwb.org/hosted/images/58/9c8dd2609745ee8aba7651d100ef32/Man-Silhouette-ThrillerMystery-Book-Cover-1-.png" alt="The Footprints of a Prophet">
+        <div class="book-badge">
+          <span class="book-badge-text">From</span>
+          <span class="book-badge-price">$20</span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="book-tag">Featured Resource</div>
+      <h1 class="book-title">The Footprints<br>of a Prophet</h1>
+      <div class="book-author">By Bishop Charles E. Flowers</div>
+      <div class="book-stars">
+        <span class="stars"><svg width="18" height="18" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg><svg width="18" height="18" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg><svg width="18" height="18" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg><svg width="18" height="18" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg><svg width="18" height="18" fill="#f59e0b" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg></span>
+        <span class="stars-text">5.0 — "Life-changing read"</span>
+      </div>
+      <p class="book-desc">A powerful exploration of prophetic leadership and the footsteps that shape nations. This book will challenge your understanding of influence, calling, and the prophetic mandate on your life.</p>
+
+      <!-- Purchase Options -->
+      <div class="book-options">
+        <div class="book-option selected" data-amount="20" data-name="Digital Book" onclick="selectOption(this)">
+          <div class="book-option-radio"></div>
+          <div class="book-option-info">
+            <div class="book-option-name">Digital Edition (PDF)</div>
+            <div class="book-option-desc">Instant download — read on any device</div>
+          </div>
+          <div class="book-option-price">$20</div>
+        </div>
+        <div class="book-option" data-amount="30" data-name="Paperback Book" onclick="selectOption(this)">
+          <div class="book-option-radio"></div>
+          <div class="book-option-info">
+            <div class="book-option-name">Paperback Edition</div>
+            <div class="book-option-desc">Shipped to your door — free US shipping</div>
+          </div>
+          <div class="book-option-price">$30</div>
+        </div>
+        <div class="book-option" data-amount="25" data-name="Book + Partner" onclick="selectOption(this)">
+          <div class="book-option-badge">Best Value</div>
+          <div class="book-option-radio"></div>
+          <div class="book-option-info">
+            <div class="book-option-name">Book + SABWB Partner ($25/mo)</div>
+            <div class="book-option-desc">Get the book FREE with your first month as a Partner</div>
+          </div>
+          <div class="book-option-price"><span class="old">$30</span> Free</div>
+        </div>
+      </div>
+
+      <button class="book-cta" onclick="openCheckout()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+        Get Your Copy Now
+      </button>
+      <div class="book-guarantee">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4a4 4 0 00-8 0v4"/><rect x="2" y="8" width="12" height="8" rx="2"/></svg>
+        Secure checkout powered by Stripe &bull; 30-day money-back guarantee
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT'S INSIDE -->
+  <section class="whats-inside">
+    <div class="whats-inside-inner">
+      <h2 class="reveal">What You'll Discover Inside</h2>
+      <p class="subtitle reveal" style="text-align:center;font-size:16px;color:var(--text-muted);margin-bottom:48px;">Each chapter builds on the prophetic foundation of influence and leadership</p>
+      <div class="chapter-grid">
+        <div class="chapter-card reveal">
+          <div class="chapter-num">Chapter 1-2</div>
+          <div class="chapter-title">The Prophetic Blueprint</div>
+          <div class="chapter-desc">Understanding the foundational call of prophetic leadership and the footprints left by those who walked before us.</div>
+        </div>
+        <div class="chapter-card reveal">
+          <div class="chapter-num">Chapter 3-4</div>
+          <div class="chapter-title">Walking in Authority</div>
+          <div class="chapter-desc">How to step into your God-given authority and operate with confidence in every sphere of influence.</div>
+        </div>
+        <div class="chapter-card reveal">
+          <div class="chapter-num">Chapter 5-6</div>
+          <div class="chapter-title">Influencing Your City</div>
+          <div class="chapter-desc">Practical strategies for extending your prophetic reach into community, education, and civic life.</div>
+        </div>
+        <div class="chapter-card reveal">
+          <div class="chapter-num">Chapter 7-8</div>
+          <div class="chapter-title">The Nations Await</div>
+          <div class="chapter-desc">Expanding your impact beyond borders — the global mandate of prophetic leaders in the modern age.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT THE AUTHOR -->
+  <section class="about-author reveal">
+    <img class="author-img" src="https://www.sabwb.org/hosted/images/a9/7eec00cdf111e892d4fdacdf9bad2c/dad2.png" alt="Bishop Charles E. Flowers">
+    <div>
+      <h2>Bishop Charles E. Flowers</h2>
+      <div class="author-role">Founder, SABWB & Outpouring Missions International</div>
+      <p>Bishop Flowers is a visionary leader who has spent decades building bridges across communities in San Antonio and beyond. As founder of the San Antonio Biblical Worldview Builders and Outpouring Missions International, he has equipped thousands of leaders with tools for transformational impact. His work spans five sectors — education, government, business, church, and media — making him one of the most influential voices in the biblical worldview movement.</p>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="testimonials-inner">
+      <h2 class="reveal">What Readers Are Saying</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial reveal">
+          <div class="testimonial-text">"This book completely shifted how I see my role in the community. Bishop Flowers doesn't just teach — he activates something inside you."</div>
+          <div class="testimonial-author">Pastor Michael T.</div>
+          <div class="testimonial-role">Senior Pastor, Dallas TX</div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial-text">"A must-read for every leader who feels called to something greater. The prophetic insights are timely and practical."</div>
+          <div class="testimonial-author">Dr. Angela Williams</div>
+          <div class="testimonial-role">Educator & Community Leader</div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial-text">"I've read many leadership books, but this one stands apart. It speaks to the intersection of faith and civic responsibility."</div>
+          <div class="testimonial-author">James Robinson</div>
+          <div class="testimonial-role">Business Owner, San Antonio</div>
+        </div>
+        <div class="testimonial reveal">
+          <div class="testimonial-text">"Every chapter felt like it was written for this moment in history. I've ordered copies for my entire leadership team."</div>
+          <div class="testimonial-author">Minister Diane Cooper</div>
+          <div class="testimonial-role">Ministry Director, Houston TX</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="bottom-cta">
+    <h2 class="reveal">Ready to Walk in Your Calling?</h2>
+    <p class="reveal">Join thousands of leaders who are already following the prophetic footprints.</p>
+    <button class="book-cta reveal" onclick="openCheckout()" style="width:auto;display:inline-flex;">Get Your Copy — Starting at $20</button>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>&copy; 2026 San Antonio Biblical Worldview Builders. All rights reserved. | <a href="index.html">Home</a> &bull; <a href="events.html">Events</a> &bull; <a href="index.html#partner">Partner</a></p>
+  </footer>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+      <h3>Complete Your Purchase</h3>
+      <div class="modal-price" id="modalPrice">Digital Edition — $20</div>
+      <form onsubmit="handleBookPurchase(event)">
+        <label>Full Name</label>
+        <input type="text" id="bookName" placeholder="Your full name" required>
+        <label>Email Address</label>
+        <input type="email" id="bookEmail" placeholder="you@example.com" required>
+        <label>Card Details</label>
+        <div id="card-element"></div>
+        <div class="modal-error" id="bookError"></div>
+        <button type="submit" class="modal-buy" id="bookSubmitBtn">Pay $20</button>
+        <button type="button" class="modal-cancel" onclick="closeCheckout()">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ===== OPTION SELECTION =====
+    let selectedAmount = 20;
+    let selectedName = 'Digital Book';
+    let isPartnerOption = false;
+
+    function selectOption(el) {
+      document.querySelectorAll('.book-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedAmount = parseInt(el.dataset.amount);
+      selectedName = el.dataset.name;
+      isPartnerOption = selectedName === 'Book + Partner';
+    }
+
+    // ===== CHECKOUT MODAL =====
+    function openCheckout() {
+      const modal = document.getElementById('checkoutModal');
+      const priceEl = document.getElementById('modalPrice');
+      const btnEl = document.getElementById('bookSubmitBtn');
+
+      if (isPartnerOption) {
+        priceEl.textContent = 'Book + SABWB Partner — $25/mo (book included free)';
+        btnEl.textContent = 'Subscribe — $25/mo';
+      } else {
+        priceEl.textContent = `${selectedName} — $${selectedAmount}`;
+        btnEl.textContent = `Pay $${selectedAmount}`;
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutModal').classList.remove('active');
+    }
+
+    // Close on overlay click
+    document.getElementById('checkoutModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCheckout();
+    });
+
+    let stripe, elements, cardElement;
+
+    async function initStripe() {
+      if (stripe) return;
+      const configRes = await fetch('/api/stripe-config');
+      const config = await configRes.json();
+      if (!config.publishableKey) {
+        throw new Error('Payment system not configured yet. Please contact us directly.');
+      }
+      stripe = Stripe(config.publishableKey);
+      elements = stripe.elements();
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            fontFamily: 'Inter, sans-serif', fontSize: '15px', color: '#1d1d1f',
+            '::placeholder': { color: '#86868b' },
+          },
+        },
+      });
+      cardElement.mount('#card-element');
+    }
+
+    initStripe().catch(() => console.log('Stripe not configured'));
+
+    async function handleBookPurchase(e) {
+      e.preventDefault();
+      const errorEl = document.getElementById('bookError');
+      const submitBtn = document.getElementById('bookSubmitBtn');
+
+      errorEl.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+
+      try {
+        await initStripe();
+
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card', card: cardElement,
+          billing_details: {
+            name: document.getElementById('bookName').value,
+            email: document.getElementById('bookEmail').value,
+          },
+        });
+
+        if (error) throw error;
+
+        if (isPartnerOption) {
+          // Create subscription (partner + book)
+          const res = await fetch('/api/create-subscription', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentMethodId: paymentMethod.id,
+              email: document.getElementById('bookEmail').value,
+              name: document.getElementById('bookName').value,
+              amount: 25,
+              tier: 'Partner',
+            }),
+          });
+
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
+        } else {
+          // One-time payment for book
+          const res = await fetch('/api/create-book-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              paymentMethodId: paymentMethod.id,
+              email: document.getElementById('bookEmail').value,
+              name: document.getElementById('bookName').value,
+              amount: selectedAmount,
+              product: selectedName,
+            }),
+          });
+
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
+        }
+
+        // Success
+        document.querySelector('.modal').innerHTML = `
+          <div style="text-align:center;padding:20px;">
+            <div style="margin-bottom:16px;"><svg width="48" height="48" fill="none" stroke="var(--orange)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+            <h3 style="font-size:24px;margin-bottom:8px;">Thank You!</h3>
+            <p style="color:var(--text-secondary);margin-bottom:24px;">Your ${isPartnerOption ? 'partnership has started and your book is on the way' : 'book purchase is confirmed'}! Check your email for details.</p>
+            <button onclick="closeCheckout()" style="padding:12px 32px;border-radius:100px;background:var(--orange);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:Inter,sans-serif;">Close</button>
+          </div>
+        `;
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = isPartnerOption ? 'Subscribe — $25/mo' : `Pay $${selectedAmount}`;
+      }
+    }
+
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  </script>
+</body>
+</html>
