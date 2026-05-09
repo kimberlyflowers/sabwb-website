@@ -1,6 +1,6 @@
 # SABWB Website
 
-Website for SABWB / Southern Arizona Black Women in Business.
+SABWB website for Southern Arizona Black Women in Business.
 
 Live site: https://sabwb-redesign.vercel.app
 
