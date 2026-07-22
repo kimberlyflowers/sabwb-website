@@ -39,6 +39,22 @@ app.post('/api/create-event-session', async (req, res) => {
   }
 });
 
+app.get('/api/sanity-events', async (req, res) => {
+  try {
+    const slug = String(req.query.slug || '');
+    const listQuery = `*[_type=="event"&&site=="sabwb"]|order(featured desc,startDate asc){_id,title,"slug":slug.current,kind,tagline,featured,startDate,endDate,location,"heroImageUrl":heroImage.asset->url,priceTiers[]{label,priceCents,description,soldOut}}`;
+    const detailQuery = `*[_type=="event"&&site=="sabwb"&&slug.current==$slug][0]{_id,title,"slug":slug.current,kind,tagline,startDate,endDate,timezone,location,"heroImageUrl":heroImage.asset->url,"experienceImageUrl":experienceImage.asset->url,"experienceVideoUrl":experienceVideo.asset->url,about,agenda[]{time,title,detail},"speakers":speakers[]->{name,role,bio,"imageUrl":headshot.asset->url},priceTiers[]{label,priceCents,description,soldOut},faq[]{q,a}}`;
+    const url = new URL('https://tnmhhac3.api.sanity.io/v2024-09-30/data/query/production');
+    url.searchParams.set('query', slug ? detailQuery : listQuery);
+    if (slug) url.searchParams.set('$slug', JSON.stringify(slug));
+    const response = await fetch(url, { headers: { Accept: 'application/json' } });
+    const payload = await response.json();
+    return res.status(response.status).json({ result: payload.result });
+  } catch (_error) {
+    return res.status(502).json({ error: 'Events could not be loaded' });
+  }
+});
+
 // ===== STRIPE CONFIG =====
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 const hasStripe = stripeKey && !stripeKey.includes('placeholder');
