@@ -24,6 +24,21 @@ app.use(express.json({
   },
 }));
 
+// SABWB event tickets share OMI's secured Stripe account. Prices are resolved
+// from the SABWB event in Sanity, so the browser cannot substitute an amount.
+app.post('/api/create-event-session', async (req, res) => {
+  try {
+    const response = await fetch('https://outpouringmissions.live/api/sabwb-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://sabwb.org' },
+      body: JSON.stringify(req.body),
+    });
+    return res.status(response.status).json(await response.json());
+  } catch (_error) {
+    return res.status(502).json({ error: 'Secure checkout could not be reached' });
+  }
+});
+
 // ===== STRIPE CONFIG =====
 const stripeKey = process.env.STRIPE_SECRET_KEY;
 const hasStripe = stripeKey && !stripeKey.includes('placeholder');
